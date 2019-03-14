@@ -1,0 +1,13 @@
+title: $:/plugins/joshuafontany/jsoneditor/usage/noSchema
+
+!!Degenerate case: no schema specified
+
+The json-editor can function even without a schema. The form can be dynamically created on the fly.
+
+```
+<$jsoneditor jsonOutput="!!emptyschema-json"/>
+```
+
+<$jsoneditor jsonOutput="!!emptyschema-json"/>
+
+``{{!!emptyschema-json}}`` = <code>{{!!emptyschema-json}}</code>

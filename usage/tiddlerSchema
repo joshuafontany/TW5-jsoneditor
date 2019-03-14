@@ -1,0 +1,26 @@
+title: $:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema
+
+!!Schema stored in the text of another tiddler
+
+```
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" jsonOutput="!!person-json" theme="bootstrap4"/>
+```
+
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" jsonOutput="!!person-json" theme="bootstrap4"/>
+
+Again, the field is initially empty and the form is filled from schema defaults. Make changes above and see them reflected here:
+
+``{{!!person-json}}`` = <code>{{!!person-json}}</code>
+
+<$reveal type="nomatch" state="!!usage2" text="show">
+
+<$button set="!!usage2" setTo="show">Show schema</$button>
+
+</$reveal>
+<$reveal type="match" state="!!usage2" text="show">
+
+<$button set="!!usage2" setTo="hide">Hide schema</$button>
+
+``{{$:/plugins/joshuafontany/jsoneditor/person-schema.json}}`` = {{$:/plugins/joshuafontany/jsoneditor/person-schema.json}}
+
+</$reveal>

@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/btheado/jsoneditor/jsoneditor-widget.js
+title: $:/plugins/joshuafontany/jsoneditor/jsoneditor-widget.js
 type: application/javascript
 module-type: widget
 
@@ -14,10 +14,10 @@ JSON Editor widget
 "use strict";
 
 // Too lazy to write my own isEquals or find another way, so use one from lodash
-var _ = require("$:/plugins/btheado/jsoneditor/lodash");
+var _ = require("$:/plugins/@oss/lodash.js");
 
 // Pull in the meat of the functionality
-require("$:/plugins/btheado/jsoneditor/jsoneditor.js");
+var JSONEditor = require("$:/plugins/joshuafontany/jsoneditor/jsoneditor.js");
 
 var Widget = require("$:/core/modules/widgets/widget.js").widget;
 
@@ -40,7 +40,8 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   // Workaround for what I think is a bug in jsoneditor
   if (_.isEmpty(options.schema) && (options.startval == 0)) this.editor.setValue(options.startval);
   this.cb = this.addSaveJsonCallback.bind(this);
-  var self=this; this.editor.on("change", this.cb); //Always ignore first call to change callback
+  var self=this;
+  this.editor.on("change", this.cb); //Always ignore first call to change callback
   parent.insertBefore(this.domNode,nextSibling);
   this.domNodes.push(this.domNode);
   this.options = options; // To detect need for re-render
@@ -98,7 +99,19 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
 
   // Allow the theme to be specified
   var theme = this.getAttribute("theme");
-  if (theme) {
+  var validthemes = [
+    "barebones",
+    "html",
+    "bootstrap2",
+    "bootstrap3",
+    "bootstrap4",
+    "foundation3",
+    "foundation4",
+    "foundation5",
+    "foundation6",
+    "jqueryui",
+    "materialize"];
+  if (validthemes.indexOf(theme) != -1 ) {
     options.theme = theme;
   }
   return options;

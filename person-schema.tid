@@ -1,9 +1,10 @@
-title: $:/plugins/btheado/jsoneditor/person-schema.json
+title: $:/plugins/joshuafontany/jsoneditor/person-schema.json
 type: application/javascript
 
 {
   "title": "Person",
   "type": "object",
+  "format": "grid",
   "properties": {
     "name": {
       "type": "string",

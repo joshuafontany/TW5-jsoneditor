@@ -1,21 +1,20 @@
 {
   "tiddlers": [
     {
-      "file": "jsoneditor.min.js",
+      "file": "jsoneditor.js",
       "prefix": "if($tw.browser){\n",
       "suffix": "\n}",
       "fields": {
         "type": "application/javascript",
-        "title": "$:/plugins/btheado/jsoneditor/jsoneditor.js",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.js",
         "module-type": "library"
       }
     },
     {
-      "file": "lodash.min.js",
+      "file": "LICENSE",
       "fields": {
-        "type": "application/javascript",
-        "title": "$:/plugins/btheado/jsoneditor/lodash.js",
-        "module-type": "library"
+        "type": "text/plain",
+        "title": "$:/plugins/joshuafontany/jsoneditor/license"
       }
     }
   ]

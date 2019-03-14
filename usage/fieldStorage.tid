@@ -1,0 +1,26 @@
+title: $:/plugins/joshuafontany/jsoneditor/usage/fieldStorage
+
+!!Schema and value stored in fields of the current widget
+
+```
+<$jsoneditor schema="!!car-schema" jsonOutput="!!car-json"/>
+```
+
+<$jsoneditor schema="!!car-schema" jsonOutput="!!car-json"/>
+
+The ``car-json`` field is initially empty. The values in the field above come from defaults as given in the schema. Make changes in the form above and watch the ``car-json`` value change here:
+
+``{{!!car-json}}`` = <code>{{!!car-json}}</code>
+
+<$reveal type="nomatch" state="!!usage1" text="show">
+
+<$button set="!!usage1" setTo="show">Show schema</$button>
+
+</$reveal>
+<$reveal type="match" state="!!usage1" text="show">
+
+<$button set="!!usage1" setTo="hide">Hide schema</$button>
+
+``{{!!car-schema}}`` = <pre>{{!!car-schema}}</pre>
+
+</$reveal>
