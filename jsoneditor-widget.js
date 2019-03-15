@@ -34,71 +34,46 @@ JSONEditorWidget.prototype = new Widget();
 Render this widget into the DOM
 */
 JSONEditorWidget.prototype.render = function(parent,nextSibling) {
-  var options = this.getOptionsFromAttributes();
-  this.domNode = this.document.createElement("div");
-  this.editor = new JSONEditor(this.domNode, options);
-  // Workaround for what I think is a bug in jsoneditor
-  if (_.isEmpty(options.schema) && (options.startval == 0)) this.editor.setValue(options.startval);
-  this.cb = this.addSaveJsonCallback.bind(this);
-  var self=this;
-  this.editor.on("change", this.cb); //Always ignore first call to change callback
-  parent.insertBefore(this.domNode,nextSibling);
-  this.domNodes.push(this.domNode);
-  this.options = options; // To detect need for re-render
-	this.parentDomNode = parent; // For refreshSelf()
-}
-JSONEditorWidget.prototype.saveJson = function() {
-  var jsonOutput = this.getAttribute("jsonOutput", "!!json-output");
-  var json = JSON.parse(this.wiki.getTextReference(jsonOutput, "{}", this.getVariable("currentTiddler")));
-  var editorValue = this.editor.getValue();
-  if (!_.isEqual(json, editorValue)) {
-    this.wiki.setTextReference(jsonOutput, JSON.stringify(this.editor.getValue()), this.getVariable("currentTiddler"));
-  }
-}
-JSONEditorWidget.prototype.addSaveJsonCallback = function() {
-  var self=this;
-  this.editor.off("change", this.cb);
-  this.editor.on("change", function() {self.saveJson();}); // autosave changes
-}
-JSONEditorWidget.prototype.getTextContent = function() {
-  var dom = document.createElement("div");
-  this.makeChildWidgets();
-  this.renderChildren(dom);
-  return dom.textContent;
-}
-JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
-  this.computeAttributes();
-  var options = {};
-
+  var self = this;
+  this.parentDomNode = parent;
+	this.computeAttributes();
+  this.execute();  
   // An attribute named 'schema' contains TextReference from which to retreive
   // the json schema definition. Defaults to '{}' since JSONEditor still works
-  // with that degenerate case. Would be nice to allow putting the schema as
-  // plaintext body of the widget, but I'm not sure how to get the unparsed
-  // child text body.
-  var schema = this.getAttribute("schema");
-  if (schema) {
-    options.schema = JSON.parse(this.wiki.getTextReference(schema, "{}", this.getVariable("currentTiddler")));
+  // with that degenerate case.
+  if (this.schemaRef) {
+    this.schema = JSON.parse(this.wiki.getTextReference(this.schemaRef, "{}", this.getVariable("currentTiddler")));
   } else {
-    var schemaText = this.getTextContent();
-    console.log(schemaText);
-    if (schemaText != "") {
-      options.schema = JSON.parse(schemaText);
-    } else {
-      options.schema = {};
-    }
+      this.schema = {};
   }
-
   // The TextReference in the jsonOutput attribute indicates where to store the
   // serialized json string represented by the JSONEditor. Preload the JSONEditor
   // form with this json if it already exists
-  var jsonOutput = this.getAttribute("jsonOutput", "!!json-output");
-  var jsons = this.wiki.getTextReference(jsonOutput, null, this.getVariable("currentTiddler"));
+  var jsons = this.wiki.getTextReference(this.jsonOutput, null, this.getVariable("currentTiddler"));
   if(jsons) {
-    options.startval = JSON.parse(jsons);
+    this.startval = JSON.parse(jsons);
   }
 
+  // Create element
+  var options = {schema: this.schema, theme: this.theme, startval: this.startval};
+  var domNode = this.document.createElement("div");
+  this.editor = new JSONEditor(domNode, options);
+  // Workaround for what I think is a bug in jsoneditor
+  if (_.isEmpty(options.schema) && (options.startval == 0)) this.editor.setValue(options.startval);
+	// Insert element
+	parent.insertBefore(domNode,nextSibling);
+	this.renderChildren(domNode,null);
+	this.domNodes.push(domNode);
+}
+
+/*
+Compute the internal state of the widget
+*/
+JSONEditorWidget.prototype.execute = function() {
+  this.schemaRef = this.getAttribute("schema");
+  this.jsonOutput = this.getAttribute("jsonOutput", "!!json-output");
   // Allow the theme to be specified
-  var theme = this.getAttribute("theme");
+  var th = this.getAttribute("theme");
   var validthemes = [
     "barebones",
     "html",
@@ -111,20 +86,23 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     "foundation6",
     "jqueryui",
     "materialize"];
-  if (validthemes.indexOf(theme) != -1 ) {
-    options.theme = theme;
+  if (validthemes.indexOf(th) != -1 ) {
+    this.theme = th;
   }
-  return options;
-}
+	// Make child widgets
+	this.makeChildWidgets();
+};
+
+/*
+Selectively refreshes the widget if needed. Returns true if the widget or any of its children needed re-rendering
+*/
 JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
-  var options = this.getOptionsFromAttributes();
-  if (!_.isEqual(this.options, options)) {
-    var self=this; this.editor.off("change");
-    this.refreshSelf();
-    return true;
-  } else {
-    return false;
-  }
+  var changedAttributes = this.computeAttributes();
+	if(changedAttributes.schema || changedAttributes.theme || changedAttributes.jsonOutput) {
+		this.refreshSelf();
+		return true;
+	}
+	return this.refreshChildren(changedTiddlers);
 };
 
 exports.jsoneditor = JSONEditorWidget;
