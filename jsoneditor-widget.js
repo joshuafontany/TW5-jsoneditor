@@ -33,50 +33,21 @@ JSONEditorWidget.prototype = new Widget();
 Render this widget into the DOM
 */
 JSONEditorWidget.prototype.render = function(parent,nextSibling) {
-  var self = this, currentTiddler = this.getVariable("currentTiddler");
+  var self = this;
   this.parentDomNode = parent;
-	this.computeAttributes();
+  this.currentTiddler = this.getVariable("currentTiddler");
+  this.options = {};
+  this.domNode = $tw.utils.domMaker('div', {
+    document: this.document,
+    class: 'tw-jsoneditor'
+  });
+  this.computeAttributes();
   this.execute();
 
-  // An attribute named 'param' can pass in a valid schema json object (triple quoted for multi-line), or...
-  // An attribute named 'schemaRef' contains a textReference from which to retreive
-  // the json schema definition. Defaults to '{}' it still works with that degenerate case.
-  if ($tw.utils.jsonIsValid(this.schemaObj)) {
-    this.schema = this.schemaObj;
-  }
-  else if (this.schemaRef) {
-    var text = this.wiki.getTextReference(this.schemaRef, "{}", currentTiddler);
-    if ($tw.utils.jsonIsValid(text, currentTiddler)) this.schema = JSON.parse(text);
-    else this.schema = {};
-  } else {
-      this.schema = {};
-  }
-
-  // The textReference in the json attribute indicates where to store the
-  // serialized json string represented by the JSONEditor. Preload the JSONEditor
-  // form with this json if it already exists
-  //var jsons = this.wiki.getTextReference(this.json, null, currentTiddler);
-  //if($tw.utils.jsonIsValid(jsons, this.json)) {
-  //  this.startval = JSON.parse(jsons);
-  //}
-
-  // Create root editor
-  var domNode = this.document.createElement("div");
-
-  var options = {
-    schema: this.schema,
-    theme: this.theme,
-    //startval: this.startval,
-    wiki: this.wiki
-  };
-  this.editor = new JSONEditor(domNode, options);
-  // Workaround for what I think is a bug in jsoneditor
-  if (_.isEmpty(options.schema) && (options.startval == 0)) this.editor.setValue(options.startval);
-  
   // Insert element
-	parent.insertBefore(domNode,nextSibling);
-	this.renderChildren(domNode,null);
-	this.domNodes.push(domNode);
+	parent.insertBefore(this.domNode,nextSibling);
+	this.renderChildren(this.domNode,null);
+	this.domNodes.push(this.domNode);
 }
 
 /*
@@ -90,9 +61,46 @@ JSONEditorWidget.prototype.execute = function() {
   /  iconlib = the 'icon library' to use, must be one of validlibs[] below
   /  theme = one of the validthemes[] below
   /*/
+  this.jsonRoot = this.getAttribute("json", "New Json Tiddler");
+  this.schemaRef = this.getAttribute("schema", this.jsonRoot);
   this.schemaObj = this.getAttribute("param");
-  this.schemaRef = this.getAttribute("schema");
-  this.json = this.getAttribute("json", "New Json Tidler");
+  // An attribute named 'param' can pass in a valid schema json object
+  // (triple quoted for multi-line), or as translusion, variable, etc.
+  // Otherwise 'schemaRef' contains a textReference from which to retreive
+  // the json schema definition. Defaults to '{}' it still works with that degenerate case.
+  var text = this.wiki.getTextReference(this.schemaRef, "{}", this.currentTiddler),
+  schemaValid = $tw.utils.jsonIsValid(text, this.schemaRef) || false,
+  paramValid = $tw.utils.jsonIsValid(this.schemaObj, this.currentTiddler) || false;
+  if ((!this.schemaObj || this.schemaObj === "") && paramValid) {
+    this.options.schema = this.schemaObj;
+  }
+  else if (this.schemaRef && schemaValid)
+  { this.options.schema = JSON.parse(text); }
+  else { this.options.schema = {}; }
+  //Test to see if the jsonRoot is a tiddler title or a reference to a field or index
+  var result = $tw.utils.parseTextReference(this.jsonRoot);
+  if(!$tw.wiki.tiddlerExists(result.title)) {
+    $tw.wiki.setTextReference(this.jsonRoot, "{}");
+  }
+  if (result.field) { //If json target is a field, pre-load values
+      this.options.startval = this.json;
+      this.target = "field";
+  }
+  else if (result.index) this.target = "index";
+  else this.target = "tiddler";
+  this.options.target = this.target;
+  this.options.form_name_root = this.jsonRoot;
+  
+  //If jsonRoot contains invalid json, alert
+  var jsonstring = $tw.wiki.getTextReference(this.jsonRoot, "{}", this.currentTiddler);
+  if($tw.utils.jsonIsValid(result.title, jsonstring)) {
+    this.json = JSON.parse(jsonstring);
+  }
+  else {
+    this.makeChildWidgets(["''Error: invalid json attribute''"]);
+    return; 
+  }
+  // iconlib and theme
   var lib = this.getAttribute("iconlib");
   var validlibs = [
     "bootstrap2",
@@ -105,7 +113,7 @@ JSONEditorWidget.prototype.execute = function() {
     "fontawesome5",
     "materialicons"
   ];
-  if (validthemes.indexOf(lib) != -1 ) this.iconlib = lib;
+  if (validlibs.indexOf(lib) != -1 ) this.options.iconlib = lib;
   var th = this.getAttribute("theme");
   var validthemes = [
     "barebones",
@@ -119,17 +127,14 @@ JSONEditorWidget.prototype.execute = function() {
     "foundation6",
     "jqueryui",
     "materialize"];
-  if (validthemes.indexOf(th) != -1 ) this.theme = th;
-  // Compose the editor sub elements
-	this.list = this.getTiddlerList();
-	var members = [],
-  self = this;
-  $tw.utils.each(this.list,function(title,index) {
-    members.push(self.makeItemTemplate(title));
-  });
-	
+  if (validthemes.indexOf(th) != -1 ) this.options.theme = th;
+  // Create root editor
+  this.options.parent = this;
+  this.editor = new JSONEditor(this.domNode, this.options);
+  // Workaround for what I think is a bug in jsoneditor
+  if (_.isEmpty(this.options.schema) && (this.options.startval == 0)) this.editor.setValue(this.options.startval);
 	// Construct the child widgets
-	this.makeChildWidgets(members);
+	this.makeChildWidgets(this.editor.jsoneditor.root_container);
 };
 
 /*

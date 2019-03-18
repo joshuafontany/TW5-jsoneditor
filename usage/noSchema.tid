@@ -5,9 +5,9 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/noSchema
 The json-editor can function even without a schema. The form can be dynamically created on the fly.
 
 ```
-<$jsoneditor jsonOutput="!!emptyschema-json"/>
+<$jsoneditor json="No Schema Json" theme="bootstrap4"/>
 ```
 
-<$jsoneditor jsonOutput="!!emptyschema-json"/>
+<$jsoneditor json="No Schema Json" theme="bootstrap4"/>
 
-``{{!!emptyschema-json}}`` = <code>{{!!emptyschema-json}}</code>
+``{{No Schema Json}}`` = <code>{{No Schema Json}}</code>

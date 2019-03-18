@@ -1,17 +1,20 @@
-car-schema: {"type":"object","title":"Car","properties":{"make":{"type":"string","enum":["Toyota","BMW","Honda","Ford","Chevy","VW"]},"model":{"type":"string"},"year":{"type":"integer","enum":[1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014],"default":2008}}}
 title: $:/plugins/joshuafontany/jsoneditor/usage/fieldStorage
 
-!!Schema and value stored in fields of the widget's tiddler
+!!Schema and value stored in fields of a source tiddler
+
+Warning: Do not use fields on the "current tiddler" due to the self-edit refresh problem
 
 ```
-<$jsoneditor schema="!!car-schema" jsonOutput="!!car-json"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" theme="bootstrap4"/>
 ```
 
-<$jsoneditor schema="!!car-schema" jsonOutput="!!car-json"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" theme="bootstrap4"/>
 
-The ``car-json`` field is initially empty. The values in the field above come from defaults as given in the schema. Make changes in the form above and watch the ``car-json`` value change here:
+The ``car-json`` field is initially empty. The values in the field above come from defaults as given in the schema. 
 
-``{{!!car-json}}`` = <code>{{!!car-json}}</code>
+Make changes in the form above and watch the ``car-json`` value change here:
+
+``{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-json}}`` = <code>{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-json}}</code>
 
 <$reveal type="nomatch" state="!!usage1" text="show">
 
@@ -22,6 +25,6 @@ The ``car-json`` field is initially empty. The values in the field above come fr
 
 <$button set="!!usage1" setTo="hide">Hide schema</$button>
 
-``{{!!car-schema}}`` = <pre>{{!!car-schema}}</pre>
+``{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema}}`` = <pre>{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema}}</pre>
 
 </$reveal>

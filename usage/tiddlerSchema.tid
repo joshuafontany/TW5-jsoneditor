@@ -1,16 +1,16 @@
 title: $:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema
 
-!!Schema stored in the text of another tiddler
+!!Schema stored in the text of a json tiddler
 
 ```
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" jsonOutput="!!person-json" theme="bootstrap4"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" theme="bootstrap4"/>
 ```
 
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" jsonOutput="!!person-json" theme="bootstrap4"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" theme="bootstrap4"/>
 
-Again, the field is initially empty and the form is filled from schema defaults. Make changes above and see them reflected here:
+Again, the data tiddler is initially empty and the form is filled from schema defaults. Make changes above and see them reflected here:
 
-``{{!!person-json}}`` = <code>{{!!person-json}}</code>
+``{{New Person Tiddler}}`` = <code>{{New Person Tiddler}}</code>
 
 <$reveal type="nomatch" state="!!usage2" text="show">
 

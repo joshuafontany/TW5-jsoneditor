@@ -15,19 +15,19 @@ If the content of the `<$jsoneditor>` widget is not empty, then the text will be
 
 In addition, HTML special characters may need to be escaped.
 
-Any mangling issues using the widget content can be solved by storing the schema in a tiddler field and using the schema attribute.
-
 |!Attribute |!Description |
-|schema |A TextReference containing the JSON describing the schema for the form. Will only be used if the widget content is empty|
-|jsonOutput |A TextReference telling where to load the JSON data from and save the JSON data to defaults to field in current tiddler named ``json-output``|
-|theme|A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/jdorn/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap3``, for example, you can use the [[bootstrap3 css|http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The jsoneditor ``grid`` format will only work if you use a theme other than the default ``html``|
+|`json` |A TextReference telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
+|`schema` |A TextReference pointing to the schema for the form. Will only be used if the `param` attribute is empty|
+|`param` |An optional parameter that will accept a literal schema object via triple quotes, transclusion, macro, etc |
+|`iconlib` |An optional icon library to use. See the available Icon Libraries in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]] |
+|`theme` |A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap3``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The jsoneditor ``grid`` format will only work if you use a theme other than the default ``html``. |
 
 !Examples
 
 {{$:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema}}
 
-{{$:/plugins/joshuafontany/jsoneditor/usage/fieldStorage}}
+{{$:/plugins/joshuafontany/jsoneditor/usage/paramSchema}}
 
-{{$:/plugins/joshuafontany/jsoneditor/usage/contentSchema}}
+{{$:/plugins/joshuafontany/jsoneditor/usage/fieldStorage}}
 
 {{$:/plugins/joshuafontany/jsoneditor/usage/noSchema}}

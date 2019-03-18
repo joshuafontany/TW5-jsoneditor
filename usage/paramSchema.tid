@@ -1,11 +1,9 @@
-title: $:/plugins/joshuafontany/jsoneditor/usage/contentSchema
+title: $:/plugins/joshuafontany/jsoneditor/usage/paramSchema
 
-!!Schema in the content of the widget
+!!Schema in the param attribute
 
 ```
-<$jsoneditor jsonOutput="!!car-json2">
-
-$$$application/json
+<$jsoneditor json="New Car Tiddler" param="""$$$application/json
 {
   "type": "object",
   "title": "Car",
@@ -36,13 +34,10 @@ $$$application/json
     }
   }
 }
-$$$
-</$jsoneditor>
+$$$"""/>
 ```
 
-<$jsoneditor jsonOutput="!!car-json2">
-
-$$$application/json
+<$jsoneditor json="New Car Tiddler" param="""$$$application/json
 {
   "type": "object",
   "title": "Car",
@@ -73,7 +68,6 @@ $$$application/json
     }
   }
 }
-$$$
-</$jsoneditor>
+$$$"""/>
 
-``{{!!car-json2}}`` = <code>{{!!car-json2}}</code>
+``{{New Car Tiddler}}`` = <code>{{New Car Tiddler}}</code>
