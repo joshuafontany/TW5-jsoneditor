@@ -1,6 +1,3 @@
-title: $:/plugins/joshuafontany/jsoneditor/person-schema.json
-type: application/javascript
-
 {
   "title": "Person",
   "type": "object",

@@ -2,14 +2,24 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/fieldStorage
 
 !!Schema and value stored in fields of a source tiddler
 
-Warning: Do not use fields on the "current tiddler" due to the self-edit refresh problem
+''Warning:'' Do not use fields on the "current tiddler" due to the self-edit refresh problem
+
+''Exception:'' template tiddler intented to be transcluded into another `currentTiddler` context
 
 ```
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" theme="bootstrap4"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" options="""{
+        "theme": "bootstrap4",
+        "required_by_default": true,
+        "display_required_only": true    
+    }"""/>
 ```
 
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" theme="bootstrap4"/>
-
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" options="""{
+        "theme": "bootstrap4",
+        "required_by_default": true,
+        "display_required_only": true    
+    }"""/>
+    
 The ``car-json`` field is initially empty. The values in the field above come from defaults as given in the schema. 
 
 Make changes in the form above and watch the ``car-json`` value change here:

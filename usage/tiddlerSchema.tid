@@ -3,10 +3,10 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema
 !!Schema stored in the text of a json tiddler
 
 ```
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" theme="bootstrap4"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" options="""{ "theme": "bootstrap4" }"""/>
 ```
 
-<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" theme="bootstrap4"/>
+<$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema" json="New Person Tiddler" options="""{ "theme": "bootstrap4" }"""/>
 
 Again, the data tiddler is initially empty and the form is filled from schema defaults. Make changes above and see them reflected here:
 
@@ -21,6 +21,6 @@ Again, the data tiddler is initially empty and the form is filled from schema de
 
 <$button set="!!usage2" setTo="hide">Hide schema</$button>
 
-``{{$:/plugins/joshuafontany/jsoneditor/person-schema.json}}`` = {{$:/plugins/joshuafontany/jsoneditor/person-schema.json}}
+``{{$:/plugins/joshuafontany/jsoneditor/person-schema}}`` = {{$:/plugins/joshuafontany/jsoneditor/person-schema}}
 
 </$reveal>

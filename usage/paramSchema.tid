@@ -3,8 +3,9 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/paramSchema
 !!Schema in the param attribute
 
 ```
-<$jsoneditor json="New Car Tiddler" param="""$$$application/json
+<$jsoneditor json="New Car Tiddler" options="""{ "theme": "bootstrap4" }""" param="""
 {
+  "format": "grid",
   "type": "object",
   "title": "Car",
   "properties": {
@@ -33,12 +34,12 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/paramSchema
       "default": 2008
     }
   }
-}
-$$$"""/>
+}"""/>
 ```
 
-<$jsoneditor json="New Car Tiddler" param="""$$$application/json
+<$jsoneditor json="New Car Tiddler" options="""{ "theme": "bootstrap4" }""" param="""
 {
+  "format": "grid",
   "type": "object",
   "title": "Car",
   "properties": {
@@ -67,7 +68,6 @@ $$$"""/>
       "default": 2008
     }
   }
-}
-$$$"""/>
+}"""/>
 
 ``{{New Car Tiddler}}`` = <code>{{New Car Tiddler}}</code>
