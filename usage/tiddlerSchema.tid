@@ -2,9 +2,20 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema
 
 !!Schema stored in the text of a json tiddler
 
+<$reveal type="nomatch" state="!!usageCode2" text="show">
+
+<$button set="!!usageCode2" setTo="show">Show source</$button>
+
+</$reveal>
+<$reveal type="match" state="!!usageCode2" text="show">
+
+<$button set="!!usageCode2" setTo="hide">Hide source</$button>
+
 ```
 <$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" options="""{ "theme": "bootstrap4" }"""/>
 ```
+
+</$reveal>
 
 <$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema" json="New Person Tiddler" options="""{ "theme": "bootstrap4" }"""/>
 

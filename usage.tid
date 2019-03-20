@@ -5,29 +5,36 @@ title: $:/plugins/joshuafontany/jsoneditor/usage
 
 ! Introduction
 
-The jsoneditor widget generates and displays an HTML form constructed from the given [[JSON Schema|http://json-schema.org/]]. The schema can reside in the text of another tiddler or a field from another tiddler or the current tiddler. A TiddlyWiki TextReference is used to specify the schema location. The JSON corresponding to the form values is saved to and restored from the given Tiddler field as specified by a TextReference. Changes to form values are automatically saved to the JSON output.
+The jsoneditor widget generates and displays an HTML form constructed from the given [[JSON Schema|http://json-schema.org/]]. It does this by wrapping a TiddlyWiki widget around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin.
 
-This is just a TiddlyWiki wrapper around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin.
+The schema must be in JSON Schema format and can reside in:
 
-! Content and Attributes
+* the text of any json tiddler
+* any index in any json tiddler
+* any field from any tiddler (using the text field by default)
 
-If the content of the `<$jsoneditor>` widget is not empty, then the text will be used as the JSON schema. Note that the content passes through the Tiddlywiki parser and it is inserted into a temporary DOM structure. The text content of the dom structure is used as the JSON. Therefore, Tiddlywiki syntax which happens to appear in the JSON would cause the JSON to get mangled. Triple backticks for specifying code blocks, Typed Block syntax (of type application/json for example), and html tags such as ``pre`` or ``p`` might work. Note the backticks and the typed blocks must be preceded by a blank line.
+! Attributes
 
-In addition, HTML special characters may need to be escaped.
+A TiddlyWiki TextReference is used to specify the `schema` attribute. The `json` attribute holds a TextReference corresponding to the location the form values are saved to and restored from.
+
+Two optional attributes can be included. Both parse the value text as a json object. `param` can be used to include a schema via direct text transcludion, variable, list, etc. `options` is a way to change the default rendering setting: if collapsed, if fields show labels, the startval of the form, etc. These things cannot be set from within the `schema` object (which has it's own set of options).
 
 |!Attribute |!Description |
 |`json` |A TextReference telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
-|`schema` |A TextReference pointing to the schema for the form. Will only be used if the `param` attribute is empty|
+|`schema` |A TextReference pointing to the schema for the form. Will only be used if the `param` attribute is empty. Defaults to a [[New Schema Tiddler]]|
 |`param` |An optional parameter that will accept a literal schema object via triple quotes, transclusion, macro, etc |
+|`options` |An optional parameter that will accept a literal options object via triple quotes, transclusion, macro, etc |
+
+|!Common Widget Options |!Description |
 |`iconlib` |An optional icon library to use. See the available Icon Libraries in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]] |
-|`theme` |A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap3``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The jsoneditor ``grid`` format will only work if you use a theme other than the default ``html``. |
+|`theme` |A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap3``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The a schema with a ``format`` key set to  ``grid`` only work if you use a theme other than the default (``html``). |
 
 !Examples
 
 {{$:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema}}
 
-{{$:/plugins/joshuafontany/jsoneditor/usage/paramSchema}}
-
 {{$:/plugins/joshuafontany/jsoneditor/usage/fieldStorage}}
+
+{{$:/plugins/joshuafontany/jsoneditor/usage/paramSchema}}
 
 {{$:/plugins/joshuafontany/jsoneditor/usage/noSchema}}

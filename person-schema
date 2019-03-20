@@ -25,7 +25,9 @@
       "type": "string",
       "enum": [
         "male",
-        "female"
+        "female",
+        "other",
+        "none"
       ]
     },
     "location": {

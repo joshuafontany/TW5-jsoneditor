@@ -2,6 +2,15 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/paramSchema
 
 !!Schema in the param attribute
 
+<$reveal type="nomatch" state="!!usageCode3" text="show">
+
+<$button set="!!usageCode3" setTo="show">Show source</$button>
+
+</$reveal>
+<$reveal type="match" state="!!usageCode3" text="show">
+
+<$button set="!!usageCode3" setTo="hide">Hide source</$button>
+
 ```
 <$jsoneditor json="New Car Tiddler" options="""{ "theme": "bootstrap4" }""" param="""
 {
@@ -36,6 +45,8 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/paramSchema
   }
 }"""/>
 ```
+
+</$reveal>
 
 <$jsoneditor json="New Car Tiddler" options="""{ "theme": "bootstrap4" }""" param="""
 {

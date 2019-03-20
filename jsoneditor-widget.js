@@ -41,13 +41,13 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   this.nextSibling = nextSibling;
   this.currentTiddler = this.getVariable("currentTiddler");
   this.computeAttributes();
-  this.execute();
+  var domNode = this.execute();
   this.cb = this.addSaveJsonCallback.bind(this);
   this.editor.on("change", this.cb); //Always ignore first call to change callback
   // Insert element
-	parent.insertBefore(this.domNode,this.nextSibling);
-	//this.renderChildren(this.domNode,null);
-	this.domNodes.push(this.domNode);
+	parent.insertBefore(domNode,this.nextSibling);
+	this.renderChildren(domNode,null);  // Only render if there are widgets
+	this.domNodes.push(domNode);
 }
 
 /*
@@ -61,9 +61,6 @@ JSONEditorWidget.prototype.execute = function() {
   /  iconlib = the 'icon library' to use, must be one of validlibs[] below
   /  theme = one of the validthemes[] below
   */
-  this.schemaObj = this.getAttribute("param", "");
-  this.schemaRef = this.getAttribute("schema", "New Schema Tiddler");
-  this.jsonRoot = this.getAttribute("json", "New Json Tiddler");
   this.targets = this.setTargets();
   this.json = this.getJsonFromAttributes();
   this.options = this.getOptionsFromAttributes();
@@ -78,14 +75,18 @@ JSONEditorWidget.prototype.execute = function() {
     this.rebuildEditorNodes(container);
   }  
    // Construct the child widgets
-  this.domNode = container;
-	this.makeChildWidgets(this.domNode);
+  this.makeChildWidgets(container);
+  return container;
 };
 
 /*
 Sets the target attribute based on the json textReference
 */
 JSONEditorWidget.prototype.setTargets = function() {
+  this.schemaObj = this.getAttribute("param", "");
+  this.schemaRef = this.getAttribute("schema", "New Schema Tiddler");
+  this.jsonRoot = this.getAttribute("json", "New Json Tiddler");
+
   var sources = [],
   results = [],
   targets = [];
@@ -114,13 +115,13 @@ Rebuilds the options object
 JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   var optionstring = this.getAttribute("options", "{}"),
   optionsValid = $tw.utils.jsonIsValid(this.currentTiddler, optionstring) || false;
-  options = optionsValid ? SON.parse(optionstring) : {};
+  var options = optionsValid ? JSON.parse(optionstring) : {};
   /* An attribute named 'param' can pass in a valid schema json string
-    /  as a triple quoted string, or as translusion, variable, etc.
-    /  Otherwise 'schema' contains a textReference from which to retreive
-    /  the json schema definition. Defaults to '{}' as it still works with 
-    /  that degenerate case.
-    */
+  /  as a triple quoted string, or as translusion, variable, etc.
+  /  Otherwise the 'schema' attribute contains a textReference from which
+  /  to retreive the json schema definition. Defaults to '{}' as it still
+  /  works with that degenerate case.
+  */
   var text = this.wiki.getTextReference(this.schemaRef, "{}", this.currentTiddler),
   schemaValid = $tw.utils.jsonIsValid(this.targets[0].title, text) || false,
   paramValid = (this.schemaObj && this.schemaObj !== "") ? $tw.utils.jsonIsValid(this.currentTiddler, this.schemaObj) : false;
@@ -147,7 +148,7 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
      "materialicons"
    ];
    options.iconlib = (validlibs.indexOf(lib) != -1 ) ? lib : "";
-   var th = this.getAttribute("theme");
+   var th = options.theme;
    var validthemes = [
      "barebones",
      "html",
@@ -161,8 +162,8 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
      "jqueryui",
      "materialize"];
    options.theme = (validthemes.indexOf(th) != -1 ) ? th : "";
-  //If json target is a field, pre-load values
-  options.startval = (this.targets[1].type == "field") ? this.json : null;
+  //Pre-load values
+  options.startval = this.json; //(this.targets[1].type == "field") ? this.json : null;
   return options;
 }
 
@@ -170,7 +171,7 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
 Rebuilds the json object from source
 */
 JSONEditorWidget.prototype.getJsonFromAttributes = function() {
-  var jsonstring = this.wiki.getTextReference(this.jsonRoot, "", this.currentTiddler);
+  var jsonstring = this.wiki.getTextReference(this.jsonRoot, "{}", this.currentTiddler);
   //If jsonRoot contains invalid json, alert
   if($tw.utils.jsonIsValid(this.targets[1].title, jsonstring) && jsonstring !== ""){
     return JSON.parse(jsonstring);
@@ -182,7 +183,7 @@ Rebuilds the domNode if the target is a json tiddler or index
 */
 JSONEditorWidget.prototype.rebuildEditorNodes = function(domNode) {
 //
-domNode.appendChild(this.document.createTextNode("**I should have widgets!**"));
+domNode.insertBefore(this.document.createTextNode("**I should have widgets!**"), null);
 return domNode;
 }
 
@@ -193,10 +194,10 @@ JSONEditorWidget.prototype.saveJson = function() {
   var editorValue = this.editor.getValue();
   //var editorSchema = this.editor.;
   if (!_.isEqual(this.json, editorValue)) {
-    this.wiki.setTextReference(this.jsonRoot, JSON.stringify(this.editor.getValue()), this.getVariable("currentTiddler"));
+    this.wiki.setTextReference(this.jsonRoot, JSON.stringify(this.editor.getValue()), this.currentTiddler);
   }
   // if (!_.isEqual(this.options.schema, editorSchema)) {
-  //   this.wiki.setTextReference(this.jsonRoot, JSON.stringify(this.editor.getValue()), this.getVariable("currentTiddler"));
+  //   this.wiki.setTextReference(this.schemaRef, JSON.stringify(this.editor.????), this.currentTiddler);
   // }
 }
 JSONEditorWidget.prototype.addSaveJsonCallback = function() {
@@ -212,31 +213,21 @@ Selectively refreshes the widget if needed. Returns true if the widget or any of
 */
 JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   var changedAttributes = this.computeAttributes();
-  var targets = this.setTargets();
+  var targets = this.setTargets(),
+  options = this.getOptionsFromAttributes(),
+  json = this.getJsonFromAttributes();
   if (changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
     var self=this;
     this.editor.off("change");
-    this.editor.destroy();
     this.refreshSelf();
     return true;
   }
   else if (changedTiddlers[targets[0].title] || changedTiddlers[targets[1].title]){
-    if(this.targets[1].type !== "field"){
-      var self=this;
-      this.editor.off("change");
-      this.editor.destroy();
-      this.refreshSelf();
-      return true;
-    }
-    else{
-      var options = this.getOptionsFromAttributes(),
-          json = this.getJsonFromAttributes();
-      var jsonEq = _.isEqual(this.json, json),
-          opEq = _.isEqual(this.options, options);
-      if(!jsonEq) {this.json = json; this.editor.root.value = json;}
-      if(!opEq) this.editor.options = options;
-      if (!jsonEq || !opEq) this.editor.trigger("change");
-    }
+    var jsonEq = _.isEqual(this.json, json),
+    opEq = _.isEqual(this.options, options);
+    if(!jsonEq) {this.json = json; this.editor.root.jsoneditor.setValue(json);}
+    if(!opEq) this.editor.options = options;
+    if (!jsonEq || !opEq) this.editor.trigger("change");
   }
   if (this.targets[1].type !== "field"){
     return this.refreshChildren(changedTiddlers);
