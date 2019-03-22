@@ -1,13 +1,27 @@
 {
   "tiddlers": [
     {
-      "file": "jsoneditor.js",
+      "file": "jsoneditor-readme.md",
+      "fields": {
+        "type": "text/markdown",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor-readme.md"
+      }
+    },
+    {
+      "file": "jsoneditor.min.js",
       "prefix": "if($tw.browser){\n",
       "suffix": "\n}",
       "fields": {
         "type": "application/javascript",
-        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.js",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.min.js",
         "module-type": "library"
+      }
+    },
+    {
+      "file": "defaultOptions.json",
+      "fields": {
+        "type": "application/json",
+        "title": "$:/plugins/joshuafontany/jsoneditor/defaultOptions"
       }
     },
     {

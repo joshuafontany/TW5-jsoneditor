@@ -2,14 +2,14 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema
 
 !!Schema stored in the text of a json tiddler
 
-<$reveal type="nomatch" state="!!usageCode2" text="show">
+<$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode2" text="show">
 
-<$button set="!!usageCode2" setTo="show">Show source</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode2" setTo="show">Show source</$button>
 
 </$reveal>
-<$reveal type="match" state="!!usageCode2" text="show">
+<$reveal type="match" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode2" text="show">
 
-<$button set="!!usageCode2" setTo="hide">Hide source</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode2" setTo="hide">Hide source</$button>
 
 ```
 <$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/person-schema.json" json="New Person Tiddler" options="""{ "theme": "bootstrap4" }"""/>
@@ -23,14 +23,14 @@ Again, the data tiddler is initially empty and the form is filled from schema de
 
 ``{{New Person Tiddler}}`` = <code>{{New Person Tiddler}}</code>
 
-<$reveal type="nomatch" state="!!usage2" text="show">
+<$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!usage2" text="show">
 
-<$button set="!!usage2" setTo="show">Show schema</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usage2" setTo="show">Show schema</$button>
 
 </$reveal>
-<$reveal type="match" state="!!usage2" text="show">
+<$reveal type="match" state="$:/config/plugins/joshuafontany/jsoneditor!!usage2" text="show">
 
-<$button set="!!usage2" setTo="hide">Hide schema</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usage2" setTo="hide">Hide schema</$button>
 
 ``{{$:/plugins/joshuafontany/jsoneditor/person-schema}}`` = {{$:/plugins/joshuafontany/jsoneditor/person-schema}}
 

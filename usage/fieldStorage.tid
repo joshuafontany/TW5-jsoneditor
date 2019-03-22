@@ -6,20 +6,19 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/fieldStorage
 
 ''Exception:'' template tiddler intented to be transcluded into another `currentTiddler` context
 
-<$reveal type="nomatch" state="!!usageCode1" text="show">
+<$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" text="show">
 
-<$button set="!!usageCode1" setTo="show">Show source</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" setTo="show">Show source</$button>
 
 </$reveal>
-<$reveal type="match" state="!!usageCode1" text="show">
+<$reveal type="match" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" text="show">
 
-<$button set="!!usageCode1" setTo="hide">Hide source</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" setTo="hide">Hide source</$button>
 
 ```
 <$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" options="""{
         "theme": "bootstrap4",
-        "no_additional_properties": true,
-        "disable_properties": true
+        "no_additional_properties": true
     }"""/>
 ```
 
@@ -27,8 +26,7 @@ title: $:/plugins/joshuafontany/jsoneditor/usage/fieldStorage
 
 <$jsoneditor schema="$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema" json="$:/plugins/joshuafontany/jsoneditor/car-data!!car-json" options="""{
         "theme": "bootstrap4",
-        "no_additional_properties": true,
-        "disable_properties": true
+        "no_additional_properties": true
     }"""/>
     
 The ``car-json`` field is initially empty. The values in the field above come from defaults as given in the schema. 
@@ -37,14 +35,14 @@ Make changes in the form above and watch the ``car-json`` value change here:
 
 ``{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-json}}`` = <code>{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-json}}</code>
 
-<$reveal type="nomatch" state="!!usage1" text="show">
+<$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!usage1" text="show">
 
-<$button set="!!usage1" setTo="show">Show schema</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usage1" setTo="show">Show schema</$button>
 
 </$reveal>
-<$reveal type="match" state="!!usage1" text="show">
+<$reveal type="match" state="$:/config/plugins/joshuafontany/jsoneditor!!usage1" text="show">
 
-<$button set="!!usage1" setTo="hide">Hide schema</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usage1" setTo="hide">Hide schema</$button>
 
 ``{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema}}`` = <pre>{{$:/plugins/joshuafontany/jsoneditor/car-data!!car-schema}}</pre>
 

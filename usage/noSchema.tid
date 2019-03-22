@@ -10,16 +10,16 @@ The json-editor can function even without a schema. The form can be dynamically 
 
 <$jsoneditor json="No Schema Json" options="""{ "theme": "bootstrap4" }"""/>
 
-<$reveal type="nomatch" state="!!usageCode1" text="show">
+<$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" text="show">
 
-<$button set="!!usageCode1" setTo="show">Show Json</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" setTo="show">Show Json</$button>
 
 ``{{No Schema Json}}`` =
 
 </$reveal>
-<$reveal type="match" state="!!usageCode1" text="show">
+<$reveal type="match" state="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" text="show">
 
-<$button set="!!usageCode1" setTo="hide">Hide Json</$button>
+<$button set="$:/config/plugins/joshuafontany/jsoneditor!!usageCode1" setTo="hide">Hide Json</$button>
 
 ``{{No Schema Json}}`` = <code>{{No Schema Json}}</code>
 
