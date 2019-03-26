@@ -45,6 +45,14 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   this.execute();
   this.bcb = this.addBoundCallbacks.bind(this);
   this.editor.on("change", this.bcb); //Always ignore first call to change callbacks
+  //Other Callbacks
+  var elements = this.container.querySelectorAll(".json-editor-btn-collapse");
+  elements.forEach((el) =>{
+    el.addEventListener("click", function(e) {
+      //console.log("saveState:"+self.jsonRoot);
+      self.saveState(e); /* autosave state */
+    });
+  });  
   // Insert element
 	parent.insertBefore(this.container,this.nextSibling);
 	this.renderChildren(this.container,null);
@@ -65,14 +73,17 @@ JSONEditorWidget.prototype.execute = function() {
   */
   // Initialize widget state
   this.targets = this.setTargets();
-  this.json = this.getJsonFromAttributes();
   this.options = this.getOptionsFromAttributes();
+  this.options.startval = this.getJsonFromAttributes();
   // Create root editor
   this.container = this.document.createElement('div');
   this.container.setAttribute("class", "tw-jsoneditor");
+    //Pre-load values
   this.editor = new JSONEditor(this.container, this.options);
   // Workaround for what I think is a bug in jsoneditor
   if (_.isEmpty(this.options.schema) && (this.options.startval == 0)) this.editor.setValue(this.options.startval);
+  this.stateObj = this.getState();
+  this.wiki.setTextReference(this.state, $tw.utils.jsonOrderedStringify(this.stateObj),this.getVariable("currentTiddler"));
   if(this.options.mode !== "edit")
   { //Replace inputs with TW transclusions
     this.rebuildEditorNodes();
@@ -80,6 +91,20 @@ JSONEditorWidget.prototype.execute = function() {
   // Construct the child widgets
   this.makeChildWidgets(this.container);
 };
+
+JSONEditorWidget.prototype.getState = function() {
+  var collapsed ={},
+  names = Object.keys(this.editor.editors);
+  names.forEach((n) => {
+    if (this.editor.editors[n].hasOwnProperty("collapsed")){
+      var optionsPath;
+      if (n == "root") {optionsPath = "options.collapsed"}
+      else { optionsPath = n.replace(/\./g, ".properties.").replace(/^root./g, "")+".options.collapsed"; }
+      collapsed[optionsPath] = this.editor.editors[n].collapsed;
+    }
+  });
+  return {"mode": this.options.mode || "edit", "schema": collapsed};
+}
 
 /*
 Sets the target attribute based on the json textReference
@@ -124,11 +149,8 @@ Rebuilds the options object
 */
 JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   //Setup a State Tiddler
-  this.state = "$:/state/jsoneditor/"+$tw.utils.jsonStringify(this.getVariable("currentTiddler"))+"/"
+  this.state = "$:/state/jsoneditor/"+$tw.utils.jsonStringify(this.getVariable("currentTiddler").replace(/^\$\:\//g, "__"))+"/"
   this.state += this.getStateQualifier();
-  if (!this.wiki.tiddlerExists(this.state)) {
-    this.wiki.setTextReference(this.state,"{}",this.getVariable("currentTiddler"));
-  }
   //Default editor options
   var defaultString = $tw.wiki.getTiddlerText("$:/plugins/joshuafontany/jsoneditor/defaultOptions", "{}"),
   defaultsValid = $tw.utils.jsonIsValid("$:/plugins/joshuafontany/jsoneditor/defaultOptions", defaultString) || false;
@@ -140,7 +162,7 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   //State tiddler options
   var stateString = $tw.wiki.getTiddlerText(this.state, "{}"),
   stateValid = $tw.utils.jsonIsValid("$:/plugins/joshuafontany/jsoneditor/defaultOptions", defaultString) || false;
-  var stateOptions = stateValid ? JSON.parse(stateString) : {};
+  var stateObj = (stateValid) ? JSON.parse(stateString) : {};
   /* An attribute named 'param' can pass in a valid schema json string
   /  as a triple quoted string, or as translusion, variable, etc.
   /  Otherwise the 'schema' attribute contains a textReference from which
@@ -183,9 +205,7 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     "jqueryui",
     "materialize"];
   options.theme = (validthemes.indexOf(th) != -1 ) ? th : "";
-  //Pre-load values
-  options.startval = this.json;
-  options = _.merge({}, defaultOptions, options, stateOptions);
+  options = _.merge({}, defaultOptions, options, stateObj);
   return options;
 }
 
@@ -206,113 +226,57 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
 }
 
 /*
-Diff and save Json on each callback change. (`Field` mode only.)
+Diff and save Json on each callback change.
 */
 JSONEditorWidget.prototype.saveJson = function() {
   if(!this.editor.ready) return;
   var editorValue = this.editor.getValue();
-  this.json = this.json = this.getJsonFromAttributes();
+  var rootObj = (typeof editorValue =="object" && editorValue != null);
+  if(this.targets[this.jsonRoot].type == "tiddler" && !rootObj) editorValue = {};
   if (!_.isEqual(this.json, editorValue)) {
-    this.wiki.setTextReference(this.jsonRoot, JSON.stringify(this.editor.getValue()), this.currentTiddler);
+    this.wiki.setTextReference(this.jsonRoot, $tw.utils.jsonOrderedStringify(editorValue), this.currentTiddler);
   }  
 }
 
-JSONEditorWidget.prototype.saveDirty = function() {
-  if(!this.editor.ready) return;
-  var dirtyKeys = this.checkDirtyValues();
-  var data = this.getJsonFromAttributes();
-  var changed = false;
-  if(dirtyKeys !== null && Object.keys(dirtyKeys).length > 0) {
-    if(dirtyKeys.root == "/" ) {
-      this.wiki.setTextReference(this.jsonRoot, $tw.utils.jsonOrderedStringify(this.editor.getValue()));
-      this.json = this.editor.getValue();
-      return;
-    }    
-    for (var i in dirtyKeys) {
-      if (!dirtyKeys.hasOwnProperty(i)) continue;
-      //console.log(i+": "+JSON.stringify(dirtyValues[i])+"\n");
-      var editorValue = this.editor.editors[i].getValue(),
-      twValue = ($tw.utils.jsonHas(data, dirtyKeys[i])) ? $tw.utils.jsonGet(data, dirtyKeys[i]) : "";
-      if (!$tw.utils.jsonHas(data, dirtyKeys[i]) || !_.isEqual(twValue, editorValue)) {
-        try {
-          $tw.utils.jsonSet(data, dirtyKeys[i], this.editor.editors[i].getValue());
-          if (this.editor.editors[i].is_dirty) this.editor.editors[i].is_dirty = false;
-        } catch (error) {
-          var key;
-          if (error.match(/Json Set Error:/g)) key = error.split(/\n/g).split(':')[1];
-          if(!key) continue;
-          else{
-            var array = $tw.utils.jsonGet(data, key);
-            $tw.utils.jsonRemove(data, key);
-            $tw.utils.jsonSet(data, key, {});
-            array.forEach((j) => {
-              $tw.utils.jsonSet(data, key+"/"+j, array[j]);
-            });
-            $tw.utils.jsonSet(data, dirtyKeys[i], this.editor.editors[i].getValue());
-            if (this.editor.editors[i].is_dirty) this.editor.editors[i].is_dirty = false;
-          }
-        }         
-      }
-    }
-    changed = true;
-  }
-  else {
-    var editorValue = this.editor.getValue(),
-    jsonKeys = $tw.utils.jsonIndexes(data),
-    valueKeys = $tw.utils.jsonIndexes(editorValue),
-    diff = _.difference(jsonKeys, valueKeys);
-    if(diff) {
-      diff.forEach((r) => {
-        $tw.utils.jsonRemove(data, r);
-     });
-    changed = true;
-    }
-  }
-  if(changed) this.wiki.setTextReference(this.jsonRoot, $tw.utils.jsonOrderedStringify(data));
-  this.json = data;
-  this.editor.setValue(data);
+/* SaveState PolyFill
+ * Element.closest() polyfill
+ * https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill
+ */
+if (!Element.prototype.closest) {
+	if (!Element.prototype.matches) {
+		Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+	}
+	Element.prototype.closest = function (s) {
+		var el = this;
+		var ancestor = this;
+		if (!document.documentElement.contains(el)) return null;
+		do {
+			if (ancestor.matches(s)) return ancestor;
+			ancestor = ancestor.parentElement;
+		} while (ancestor !== null);
+		return null;
+	};
 }
 
-JSONEditorWidget.prototype.checkDirtyValues = function() {
-  var results = {},
-  json = this.getJsonFromAttributes(),
-  jsonKeys = $tw.utils.jsonIndexes(json),
-  editorValue = this.editor.getValue();
-  if (Array.isArray(json) !== Array.isArray(editorValue)) return {root:"/"};
-  if(!(typeof editorValue === "object") || editorValue == null) {
-    this.editor.setValue({});
-    return {root:"/"};
-  }
-  var valueKeys = $tw.utils.jsonIndexes(editorValue);
-  var diff = _.difference(valueKeys, jsonKeys);
-  valueKeys.forEach((n) => {
-    var name = n.replace(/(\/)/g, ".").replace(/^(\.)/g, "");
-    name = "root." + pointer.unescape(name);
-    if(this.editor.editors[name].is_dirty) diff.push(n);
-  });
-  
-  $tw.utils.jsonSort(diff).forEach((x) => {
-    var name = x.replace(/(\/)/g, ".").replace(/^(\.)/g, "");
-    name = "root." + pointer.unescape(name);
-    if (!this.editor.editors[name]) return;
-    results[name] = x;
-   });
-   return results || null;
+/* Save State */
+JSONEditorWidget.prototype.saveState = function(e) {
+  if(!this.editor.ready) return;
+  this.stateObj = this.getState();
+  var twState = this.wiki.getTextReference(this.state, {}, this.currentTiddler),
+  stateEq = _.isEqual(this.stateObj, JSON.parse(twState));
+  if (!stateEq) {
+    this.wiki.setTextReference(this.state, $tw.utils.jsonOrderedStringify(this.stateObj), this.currentTiddler);
+  }  
+  e.preventDefault();
+  e.stopPropagation();
 }
 
 JSONEditorWidget.prototype.addBoundCallbacks = function() {
   var self=this;
   this.editor.off("change", this.bcb);
-  if(self.targets[self.jsonRoot].type == "field") {
-    this.editor.on("change", function() {      
-        self.saveJson(); // autosave changes
-    });
-  }
-  else {
-    this.editor.on("change", function() {
-      self.saveDirty();
-    });
-  }
+  this.editor.on("change", function() {      
+    self.saveJson(); // autosave changes
+  });
 }
 
 /*
@@ -320,41 +284,49 @@ Selectively refreshes the widget if needed. Returns true if the widget or any of
 */
 JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   var changedAttributes = this.computeAttributes();
-  var jsonEq = null, opEq = null,
-  options = this.getOptionsFromAttributes(),
-  json = this.getJsonFromAttributes();
-  //If the actual widget attributes have been modified, clear the event listeners and recreate the editor
-  if (changedTiddlers[this.state] || changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
+  var modeEq = true;
+  var doRefresh = function () {
     var self=this;
     this.editor.off("change");
-    thisrfeshSelf();
+    this.refreshSelf();
+  }
+  if(changedTiddlers[this.state]){
+    var twState = this.wiki.getTextReference(this.state, "{}", this.currentTiddler);
+    this.stateObj = this.getState();
+    modeEq = _.isEqual(this.stateObj.mode, JSON.parse(twState).mode);
+  }
+  //If the actual widget attributes have been modified, clear the event listeners and recreate the editor
+  if (!modeEq || changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
+    doRefresh();
     return true;
   }
   //If the title of the `schema` target tiddler is in `changedTiddlers`,
-  //get the new schema and set it on the editor
+  //rebuild the widget
   if (changedTiddlers[this.targets[this.schemaRef].title]){
-    opEq = _.isEqual(this.options, options);    
+    var options = this.getOptionsFromAttributes();
+    var opEq = _.isEqual(this.options, options);    
     if(!opEq) {
-      var self=this;
-      this.editor.off("change");
-      thisrfeshSelf();
+      doRefresh();
       return true;
     }
   }
   //If the title of the `json` target tiddler is in `changedTiddlers`,
   //get the new json and set it on the editor
   if (changedTiddlers[this.targets[this.jsonRoot].title]){
-    jsonEq = _.isEqual(this.json, json);
+    var json = this.getJsonFromAttributes();
+    var jsonEq = _.isEqual(this.json, json);
     if(!jsonEq && (changedTiddlers[this.targets[this.jsonRoot].title].destroyed)) {
-      this.json = {}; //RESET DEFAULTS HERE 
-      this.editor.setValue({});
+      
     }
-    else {
-      this.josn = json;
+    else if (!jsonEq) {
+      if (this.options.mode !== "edit") {
+        doRefresh();
+        return true;
+      }
       this.editor.setValue(json);
     }
   }
-  return thisreshChildren(changedTiddlers);
+  return this.refreshChildren(changedTiddlers);
 };
 
 exports.jsoneditor = JSONEditorWidget;

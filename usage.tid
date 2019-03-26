@@ -31,10 +31,6 @@ Two optional attributes can be included. Both parse the value text as a json obj
 
 !Examples
 
-{{$:/plugins/joshuafontany/jsoneditor/usage/tiddlerSchema}}
+Examples are found in the demo wiki: https://joshuafontany.github.io/TW5-jsoneditor/
 
-{{$:/plugins/joshuafontany/jsoneditor/usage/fieldStorage}}
-
-{{$:/plugins/joshuafontany/jsoneditor/usage/paramSchema}}
-
-{{$:/plugins/joshuafontany/jsoneditor/usage/noSchema}}
+!!![[Using JsonEditor]]
