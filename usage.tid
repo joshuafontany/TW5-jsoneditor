@@ -20,17 +20,27 @@ A TiddlyWiki TextReference is used to specify the `schema` attribute. The `json`
 Two optional attributes can be included. Both parse the value text as a json object. `param` can be used to include a schema via direct text transcludion, variable, list, etc. `options` is a way to change the default rendering setting: if collapsed, if fields show labels, the startval of the form, etc. These things cannot be set from within the `schema` object (which has it's own set of options).
 
 |!Attribute |!Description |
-|`json` |A TextReference telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
-|`schema` |A TextReference pointing to the schema for the form. Will only be used if the `param` attribute is empty. Defaults to a [[New Schema Tiddler]]|
-|`param` |An optional parameter that will accept a literal schema object via triple quotes, transclusion, macro, etc |
-|`options` |An optional parameter that will accept a literal options object via triple quotes, transclusion, macro, etc |
+| `json` |A TextReference telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
+| `schema` |A TextReference pointing to the schema for the form. Will only be used if the `param` attribute is empty. Defaults to a [[New Schema Tiddler]]|
+| `param` |An optional parameter that will accept a literal schema object via triple quotes, transclusion, macro, etc |
+| `options` |An optional parameter that will accept a literal options object via triple quotes, transclusion, macro, etc |
 
-|!Common Widget Options |!Description |
-|`iconlib` |An optional icon library to use. See the available Icon Libraries in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]] |
-|`theme` |A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap3``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The a schema with a ``format`` key set to  ``grid`` only work if you use a theme other than the default (``html``). |
+! Options
 
-!Examples
+The options widget accepts all native json-editor options in the `options` Attribute - but the default options are setup slightly differently (see the [[tiddlywiki-specific defaults|$:/plugins/joshuafontany/jsoneditor/defaultOptions]]). You may edit the `defaultOptions` shadowtiddler to change the tiddilywiki-wide editor behaviour.
 
-Examples are found in the demo wiki: https://joshuafontany.github.io/TW5-jsoneditor/
+The options widget also accepts widget-only options. These modify the behaviour of the tiddlywiki widget in the widget-tree, and thus affect the rendered DOM-tree.
 
-!!![[Using JsonEditor]]
+|!<span style="white-space: nowrap">Editor Options</span> |!Description |
+| `iconlib` |Defaults to `fontawesome5`. An optional icon library to use. See the available Icon Libraries in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]] |
+| `theme` |Defaults to `bootstrap4`. A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap4``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The a schema with a ``format`` key set to  ``grid`` only work if you use a theme other than the default (``html``). |
+
+|!<span style="white-space: nowrap">Widget Options</span> |!Description |
+| `mode` |Valid vaues are `edit` and `view`. Defaults to `edit`. When set to `view` the widget hides all inputs and instead wikifies the value at that location in the current json object and displays it in the input's place |
+| `show_all` |Due to the quirky way json-editor parses schemas, if a schema has the `required` key set but also has other non-required properties defined - AND the starting json value does not have existing data for the non-required properties, then those editors are not rendered. If `disable_properties` is set to `true` then user can never access those missing property editors. Setting `show_all` to `true` fills in the starting json's keys with blank strings, etc, as a patch around this problem. |
+
+!![[Using Json Editor]]
+
+Examples are found in the [[Using Json Editor]] tiddler in the demo wiki:
+
+https://joshuafontany.github.io/TW5-jsoneditor/

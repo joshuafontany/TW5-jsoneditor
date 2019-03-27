@@ -1,5 +1,25 @@
 {
     "mode" : "edit",
+    "compact": false,
+    "disable_array_add": false,
+    "disable_array_delete": false,
+    "disable_array_reorder": false,
+    "enable_array_copy": true,
+    "disable_collapse": false,
+    "disable_edit_json": true,
     "disable_properties": true,
-    "required_by_default": true
+    "array_controls_top": true,
+    "form_name_root": "root",
+    "iconlib": "fontawesome5",
+    "no_additional_properties": false,
+    "refs": {},
+    "required_by_default": true,
+    "keep_oneof_values": true,
+    "schema": {},
+    "show_errors": "interaction",
+    "startval": null,
+    "template": "default",
+    "theme": "bootstrap4",
+    "display_required_only": false,
+    "prompt_before_delete": true
 }
