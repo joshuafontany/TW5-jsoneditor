@@ -241,30 +241,26 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
     var isHiddenInput = function(node) {
       // Input? maches type?
       var viewTypes = ["text","textarea", "tel", "url", "number", "email"];
-      if(( node.tagName == "input" && viewTypes.contains(node.getAttribute("type")) ) || node.tagName == "textarea" ) {
+      var nodeType = node.getAttribute("type");
+      if(( node.tagName.toLowerCase() == "input" && viewTypes.indexOf(nodeType) != -1 ) || node.tagName == "textarea" ) {
         return true;
       }
       return false;
     };
-
+    var currentValue = this.editor.root.getValue();
     var inputNodes = this.editor.element.querySelectorAll('.tw-jsoneditor div.form-group .form-control');;
     inputNodes.forEach(function(node) {
       if(node.nodeType == 1) {
         if(isHiddenInput(node)) {
-          node.hidden = true;
-          var parentDiv = node.closest("[data-schemapath]");
-          var itemPath = parentDiv.getAttribute("data-schemapath");
-          itemPath = itemPath.replace(/\./g, "/").replace('root', '');
-          if(this.targets[this.jsonRoot].type == "tiddler"){
-            itemPath = this.jsonRoot + "##" + itemPath;
-          }
-          else{
-            //Index
-            itemPath = (this.jsonRoot.charAt(0) == "/") ? self.jsonRoot.replace(/\/$/,"") + itemPath : self.jsonRoot + itemPath;
-          }
-          var itemText = this.wiki.getTextReference(itemPath, null, this.currentTiddler);
-          if (!!itemText) parser = this.wiki.parseText("text/vnd.tiddlywiki",itemText,{parseAsInline: true});
-          if(parser.tree) node.parentNode.insertBefore(parser.tree, node.nextSibling);
+          node.setAttribute("hidden", true);
+          var itemPath = node.getAttribute("name");
+          itemPath = itemPath.replace(self.jsonRoot+"[", "/").replace(/\]\[/g, '/').replace(/\]/g, '');
+          var itemText = $tw.utils.jsonGet(currentValue, itemPath);
+          var div = self.document.createElement("div");
+          div.setAttribute("name", node.getAttribute("name"));
+          div.className = "tc-jsoneditor-view";
+          div.innerHTML = itemText;
+          node.parentNode.insertBefore(div, node.nextSibling);
         }
       }
     });
