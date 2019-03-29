@@ -1,5 +1,6 @@
 {
     "mode" : "edit",
+    "enabled" : true,
     "compact": false,
     "disable_array_add": false,
     "disable_array_delete": false,

@@ -14,13 +14,12 @@ JSON Editor widget
 "use strict";
 
 // Pull in the meat of the json-editor functionality
-var JSONEditor = require("$:/plugins/joshuafontany/jsoneditor/jsoneditor.min.js");
+var Meta = require("$:/plugins/joshuafontany/jsoneditor/jsonMetaSchema.js");
+var JSONEditor = require("$:/plugins/joshuafontany/jsoneditor/jsoneditor.js");
 var Widget = require("$:/core/modules/widgets/widget.js").widget;
 
 var JSONEditorWidget = function(parseTreeNode,options) {
   this.initialise(parseTreeNode,options);
-  this.options = {};
-  this.targets = [];
 };
 
 /*
@@ -33,6 +32,8 @@ Render this widget into the DOM
 */
 JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   var self = this;
+  this.options = {};
+  this.targets = [];
   this.parentDomNode = parent;
   this.nextSibling = nextSibling;
   this.currentTiddler = this.getVariable("currentTiddler");
@@ -48,7 +49,7 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
       self.saveState(e); /* autosave state */
     });
   });
-  if(this.editor.ready) this.saveState();
+  if(this.editor.ready) {this.saveState();}
   // Insert element
 	parent.insertBefore(this.container,this.nextSibling);
 	this.renderChildren(this.container,null);
@@ -59,15 +60,13 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
 Compute the internal state of the widget
 */
 JSONEditorWidget.prototype.execute = function() {
-  /* Attributes are:
-  /  param = a valid json schema object that takes preference over the schema textReference
-  /  schema  = textReference to a schema json (in a tiddler, field, or index)
-  /  json = textReference to a json tiddler or an index in a json tiddler, defaults to schema+"/data"
-  /  options = an editor config object
-  /  options.iconlib = the 'icon library' to use, must be one of validlibs[] below
-  /  options.theme = one of the validthemes[] below
-  */
+  /* Attributes are described in the Read Me. */
   // Initialize widget state
+  if(!this.state){
+    //Setup a State Tiddler Title
+    this.state = "$:/state/jsoneditor/"+$tw.utils.jsonStringify(this.getVariable("currentTiddler").replace(/^\$\:\//g, "__"))+"/"
+    this.state += this.getStateQualifier(); 
+  }
   this.targets = this.setTargets();
   this.options = this.getOptionsFromAttributes();
   this.options.startval = this.getJsonFromAttributes();
@@ -77,14 +76,12 @@ JSONEditorWidget.prototype.execute = function() {
   // Create root editor
   this.container = this.document.createElement('div');
   this.container.setAttribute("class", "tw-jsoneditor");
-    //Pre-load values
+  if(this.editor) this.editor.destroy();
   this.editor = new JSONEditor(this.container, this.options);
   // Workaround for what I think is a bug in jsoneditor
   if (JSON.stringify(this.options.schema) == "{}" && (this.options.startval == 0)) this.editor.setValue(this.options.startval);
-  if(this.options.mode !== "edit")
-  { //Replace inputs with TW transclusions
-    this.rebuildEditorNodes();
-  }
+  //Handle state and mode
+  this.rebuildEditorNodes();
   // Construct the child widgets
   this.makeChildWidgets(this.container);
 };
@@ -131,9 +128,6 @@ JSONEditorWidget.prototype.getJsonFromAttributes = function() {
 Rebuilds the options object
 */
 JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
-  //Setup a State Tiddler
-  this.state = "$:/state/jsoneditor/"+$tw.utils.jsonStringify(this.getVariable("currentTiddler").replace(/^\$\:\//g, "__"))+"/"
-  this.state += this.getStateQualifier();
   //Default editor options
   var defaultString = $tw.wiki.getTiddlerText("$:/plugins/joshuafontany/jsoneditor/defaultOptions", "{}"),
   defaultsValid = $tw.utils.jsonIsValid("$:/plugins/joshuafontany/jsoneditor/defaultOptions", defaultString) || false;
@@ -142,10 +136,6 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   var optionstring = this.getAttribute("options", "{}"),
   optionsValid = $tw.utils.jsonIsValid(this.currentTiddler, optionstring) || false;
   var options = optionsValid ? JSON.parse(optionstring) : {};
-  //State tiddler options
-  var stateString = $tw.wiki.getTiddlerText(this.state, "{}"),
-  stateValid = $tw.utils.jsonIsValid("$:/plugins/joshuafontany/jsoneditor/defaultOptions", defaultString) || false;
-  var stateObj = (stateValid) ? JSON.parse(stateString) : {};
   /* An attribute named 'param' can pass in a valid schema json string
   /  as a triple quoted string, or as translusion, variable, etc.
   /  Otherwise the 'schema' attribute contains a textReference from which
@@ -161,7 +151,13 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   { options.schema = {type:"object"}; }
   options.form_name_root = this.jsonRoot;
   //Merge
-  options = $tw.utils.jsonMerge({}, defaultOptions, options, stateObj);
+  options = $tw.utils.jsonMerge({}, defaultOptions, options);
+  //State tiddler options
+  var stateString = $tw.wiki.getTiddlerText(this.state, '{"collapsed":[]}'),
+  stateValid = $tw.utils.jsonIsValid(this.state, stateString);
+  this.stateObj = (stateValid) ? JSON.parse(stateString) : { collapsed:[]};
+  if(this.stateObj.mode) options.mode = this.stateObj.mode;
+  if(this.stateObj.enabled) options.enabled = this.stateObj.enabled;
   // iconlib and theme
   var lib = options.iconlib;
   var validlibs = [
@@ -190,23 +186,178 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     "jqueryui",
     "materialize"];
   options.theme = (validthemes.indexOf(th) != -1 ) ? th : "";
+  // handle schema editor mode
+  if(options.mode == "preview"){
+    // Preview mode for a Schema Editor
+    options.no_additional_properties = true;
+    if(this.jsonRoot == "New Json Tiddler"){this.jsonRoot = "$:/temp/json-preview/"+this.getStateQualifier();}
+  }
+  if(options.mode == "design"){
+    // Add extra validation logic for integer schemas that use the `range` format.
+    // For integer schemas that use the `range` format we require that minimum and maximum properties are set, too.
+    var range_integer_validator = function(schema, value, path) {
+      var errors = [];
+      if(value.type === 'integer' && value.format === 'range') {
+          if(typeof value.minimum === 'undefined' || typeof value.maximum === 'undefined') {
+              errors.push({
+                  path: path,
+                  property: 'format',
+                  message: 'The range format requires that you specify both minimum and maximum properties, too.'
+              });
+          }
+      }
+      return errors;
+    };
+
+    // Check that if minimum and maximum are specified, minimum <= maximum
+    var min_max_consistence_validator = function(schema, value, path) {
+      var errors = [];
+      if(value.type === 'integer' || value.type === 'number') {
+          if(typeof value.minimum !== 'undefined' && typeof value.minimum !== 'undefined' && value.minimum > value.maximum) {
+              errors.push({
+                  path: path,
+                  property: 'maximum',
+                  message: 'The maximum value must be greater than or equal than the minimum value.'
+              });
+          }
+      }
+      return errors;
+    };
+
+    options.custom_validators = [ range_integer_validator, min_max_consistence_validator ];
+    options.schema = Meta.jsonMetaSchema;
+  }
   return options;
 }
 
 /*
 Rebuilds the domNodes if the editor is in view mode to allow transcluded content
+Resets the collapsed states from this.stateObj.collapsed
 */
 JSONEditorWidget.prototype.rebuildEditorNodes = function() {
-  // If the this.options.mode = `view` hide the input elements,
-  // then wikify and insert the value as a node
-  /* 
-    var itemPath, itemText, parser, editorNode;
+  var self = this;
+  if(this.options.mode == "view") {
+    if (this.targets[this.jsonRoot].type == "field") return;
+    var isHiddenInput = function(node) {
+      // Input? maches type?
+      var viewTypes = ["text","textarea", "tel", "url", "number", "email"];
+      if(( node.tagName == "input" && viewTypes.contains(node.getAttribute("type")) ) || node.tagName == "textarea" ) {
+        return true;
+      }
+      return false;
+    };
 
-    itemText = this.wiki.getTextReference(this.jsonRoot+itemPath, null, this.currentTiddler);
-    if (itemText != null && itemText) parser = this.wiki.parseText("text/vnd.tiddlywiki",itemText,{parseAsInline: true});
-    if(parser.tree) editorNode.insertBefore(parser.tree, editorNode.children[0]);
-   */
+    var inputNodes = this.editor.element.querySelectorAll('.tw-jsoneditor div.form-group .form-control');;
+    inputNodes.forEach(function(node) {
+      if(node.nodeType == 1) {
+        if(isHiddenInput(node)) {
+          node.hidden = true;
+          var parentDiv = node.closest("[data-schemapath]");
+          var itemPath = parentDiv.getAttribute("data-schemapath");
+          itemPath = itemPath.replace(/\./g, "/").replace('root', '');
+          if(this.targets[this.jsonRoot].type == "tiddler"){
+            itemPath = this.jsonRoot + "##" + itemPath;
+          }
+          else{
+            //Index
+            itemPath = (this.jsonRoot.charAt(0) == "/") ? self.jsonRoot.replace(/\/$/,"") + itemPath : self.jsonRoot + itemPath;
+          }
+          var itemText = this.wiki.getTextReference(itemPath, null, this.currentTiddler);
+          if (!!itemText) parser = this.wiki.parseText("text/vnd.tiddlywiki",itemText,{parseAsInline: true});
+          if(parser.tree) node.parentNode.insertBefore(parser.tree, node.nextSibling);
+        }
+      }
+    });
+  }
+  if(this.options.mode == "design") { 
+    //Design Mode
+    var isObjectPropertiesButton = function(node) {
+      // Check whether the node is a properties button for an object,
+      // and not for the schema of an object named properties
+      // Does the path end in '.properties'?
+      if(node.matches('div[data-schemapath$=".properties"] > h3 > div > button.json-editor-btntype-properties')) { 
+        var containingDiv = node.parentElement.parentElement.parentElement;
+        var span = containingDiv.querySelector('h3 > span');
 
+        // Is it an object properties or a property named properties?
+        if(span && span.innerText === 'properties') { 
+            return true;
+        }
+      }
+      return false;
+    };
+
+    this.editor.element.childNodes.forEach(function(node) {
+      if(node.nodeType == 1) {
+        if(isObjectPropertiesButton(node)) {
+            node.querySelector('span').innerText = 'Add/Remove';
+        }
+        else if(node.matches('button.json-editor-btntype-properties')) {
+          // For other properties buttons, remove the 'Properties' label,
+          // and use a cog as icon
+          var icon = node.querySelector('i');
+          icon.classList.remove('fa-pen');
+          icon.classList.add('fa-cog');
+          var span = node.querySelector('span');
+          span.innerText = '';
+        }
+      }
+    });
+      
+    // Add a save button
+    var filename = 'schema.json';
+    var saveButtonLabel = 'Save';
+    var button = this.root.getButton(saveButtonLabel, 'save', saveButtonLabel);
+    var button_holder = this.root.theme.getHeaderButtonHolder();
+    button_holder.appendChild(button);
+    this.editor.root.header.parentNode.insertBefore(button_holder, this.root.header.nextSibling);
+
+    var jsonEditor = this.editor;
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        var contents = jsonEditor.getValue();
+        var blob = new Blob([JSON.stringify(contents, null, 2)], {
+            type: "application/json;charset=utf-8"
+        });
+
+        if(window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+        }
+        else {
+            var a = document.createElement('a');
+            a.download = filename;
+            a.href = URL.createObjectURL(blob);
+            a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+
+            a.dispatchEvent(new MouseEvent('click', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': false
+            }));
+        }
+    }, false);
+  }
+  //Reset the collapsed states
+  if(this.stateObj.hasOwnProperty("collapsed")) {
+    var keys = Object.keys(this.stateObj.collapsed);
+    if(keys.length > 0) keys.forEach((e) =>{
+      var editor = this.editor.editors[e];
+      if(!!editor && editor.hasOwnProperty("collapsed")){
+        if(editor.collapsed !== this.stateObj.collapsed[e]){
+          editor.toggle_button.click();
+        }
+      }
+    });
+  }
+  var editorEnabled = this.editor.root.isEnabled();
+  if((this.options.enabled == false) && editorEnabled) {
+    this.editor.disable();
+    this.editor.trigger("change");
+  }
+  if((this.options.enabled == true) && !editorEnabled) {
+    this.editor.enable();
+    this.editor.trigger("change");
+  }
 }
 
 /*
@@ -214,10 +365,11 @@ Diff and save Json on each callback change.
 */
 JSONEditorWidget.prototype.saveJson = function() {
   if(!this.editor.ready) return;
-  var editorValue = this.editor.getValue();
+  var editorValue = this.editor.getValue(),
+  json = this.getJsonFromAttributes();
   var rootObj = (typeof editorValue =="object" && editorValue != null);
   if(this.targets[this.jsonRoot].type == "tiddler" && !rootObj) editorValue = {};
-  if (!$tw.utils.jsonIsEqual(this.getJsonFromAttributes(), editorValue)) {
+  if (!$tw.utils.jsonIsEqual(json, editorValue)) {
     this.wiki.setTextReference(this.jsonRoot, $tw.utils.jsonOrderedStringify(editorValue), this.currentTiddler);
   }  
 }
@@ -250,7 +402,6 @@ JSONEditorWidget.prototype.saveState = function(e) {
   stateEq = $tw.utils.jsonIsEqual(this.stateObj, JSON.parse(twState));
   if (!stateEq) {
     this.wiki.setTextReference(this.state, $tw.utils.jsonOrderedStringify(this.stateObj), this.currentTiddler);
-    $tw.utils.jsonSet(this.options, "/schema", this.stateObj.schema);
   } 
   if(e){
     e.preventDefault();
@@ -259,14 +410,11 @@ JSONEditorWidget.prototype.saveState = function(e) {
 }
 
 JSONEditorWidget.prototype.getState = function() {
-  var results = {mode: "", schema: {}},
+  var results = {mode: this.options.mode || "edit", collapsed: {}},
   names = Object.keys(this.editor.editors);
   names.forEach((n) => {
     if(this.editor.editors[n] && this.editor.editors[n].hasOwnProperty("collapsed")) {
-      var optionsPath;
-      if (n == "root") {optionsPath = "schema/options/collapsed"}
-      else { optionsPath = n.replace(/\./g, "schema/properties/").replace(/^root./g, "/")+"/options/collapsed"; }
-      $tw.utils.jsonSet(results, optionsPath, this.editor.editors[n].collapsed);
+      results.collapsed[n] = this.editor.editors[n].collapsed;
     }
   });
   return results;
@@ -285,7 +433,7 @@ Selectively refreshes the widget if needed. Returns true if the widget or any of
 */
 JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   var changedAttributes = this.computeAttributes();
-  var modeEq = true;
+  var modeEq = true, enabledEq = true;
   var self = this;
   var doRefresh = function () {
     self.editor.off("change");
@@ -295,9 +443,10 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
     var twState = this.wiki.getTextReference(this.state, "{}", this.currentTiddler);
     this.stateObj = this.getState();
     modeEq = $tw.utils.jsonIsEqual(this.stateObj.mode, JSON.parse(twState).mode);
+    enabledEq = $tw.utils.jsonIsEqual(this.stateObj.enabled, JSON.parse(twState).enabled);
   }
   //If the actual widget attributes have been modified, clear the event listeners and recreate the editor
-  if (!modeEq || changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
+  if (!modeEq || !modeEq || changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
     doRefresh();
     return true;
   }
@@ -316,7 +465,9 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   //If the title of the `json` target tiddler is in `changedTiddlers`,
   //get the new json and set it on the editor
   if (changedTiddlers[this.targets[this.jsonRoot].title]){
-    var jsonEq = $tw.utils.jsonIsEqual(this.editor.getValue(), this.getJsonFromAttributes());
+    var json = this.getJsonFromAttributes(),
+    editorValue = this.editor.getValue();
+    var jsonEq = $tw.utils.jsonIsEqual(editorValue, json);
     if(!jsonEq) {
       this.editor.setValue(json);
     }

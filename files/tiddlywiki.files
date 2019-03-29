@@ -8,12 +8,12 @@
       }
     },
     {
-      "file": "jsoneditor.min.js",
+      "file": "jsoneditor.js",
       "prefix": "if($tw.browser){\n",
       "suffix": "\n}",
       "fields": {
         "type": "application/javascript",
-        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.min.js",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.js",
         "module-type": "library"
       }
     },
@@ -29,6 +29,16 @@
       "fields": {
         "type": "text/plain",
         "title": "$:/plugins/joshuafontany/jsoneditor/license"
+      }
+    },
+    {
+      "file": "jsonMetaSchema.js",
+      "prefix": "if($tw.browser){\n",
+      "suffix": "\n}",
+      "fields": {
+        "type": "application/javascript",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsonMetaSchema.js",
+        "module-type": "library"
       }
     }
   ]

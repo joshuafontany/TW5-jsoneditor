@@ -1,10 +1,11 @@
 {
     "title": "$:/plugins/joshuafontany/jsoneditor",
     "description": "JSONEditor: Generate html forms from JSON schema",
-    "author": "Brian Theado",
-    "version": "0.0.2",
+    "dependents": "$:/plugins/TheDiveO/FontAwesome $:/plugins/@oss/bootstrap4 $:/plugins/joshuafontany/jsonmangler $:/plugins/ebalster/modloader $:/plugins/matabele/action-maketid",
+    "author": "Joshua Fontany",
+    "version": "0.0.5",
     "list": "readme usage license",
-    "core-version": ">=5.0.8",
+    "core-version": ">=5.1.19",
     "source": "https://github.com/joshuafontany/TW5-jsoneditor",
     "plugin-type": "plugin"
 }
