@@ -21,7 +21,7 @@ Two optional attributes can be included. Both parse the attribute value as a jso
 
 |!Attribute |!Description |
 | `json` |A [[TextReference|https://tiddlywiki.com/#TextReference]] telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
-| `schema` |A [[TextReference|https://tiddlywiki.com/#TextReference]] pointing to the schema for the form. Will only be used if the `param` attribute is empty. Defaults to a [[New Schema Tiddler]]|
+| `schema` |A [[TextReference|https://tiddlywiki.com/#TextReference]] pointing to the schema for the form. Will only be used if the `param` attribute is empty. Defaults to an empty schema. |
 | `param` |An optional parameter that will accept a literal schema object via triple quotes, transclusion, macro, etc |
 | `options` |An optional parameter that will accept a literal options object via triple quotes, transclusion, macro, etc |
 
