@@ -25,20 +25,17 @@
       }
     },
     {
+      "file": "devMetaSchema4.json",
+      "fields": {
+        "type": "application/json",
+        "title": "$:/plugins/joshuafontany/jsoneditor/devMetaSchema4"
+      }
+    },
+    {
       "file": "LICENSE",
       "fields": {
         "type": "text/plain",
         "title": "$:/plugins/joshuafontany/jsoneditor/license"
-      }
-    },
-    {
-      "file": "jsonMetaSchema.js",
-      "prefix": "if($tw.browser){\n",
-      "suffix": "\n}",
-      "fields": {
-        "type": "application/javascript",
-        "title": "$:/plugins/joshuafontany/jsoneditor/jsonMetaSchema.js",
-        "module-type": "library"
       }
     }
   ]

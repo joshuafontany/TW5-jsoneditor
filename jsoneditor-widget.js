@@ -14,7 +14,6 @@ JSON Editor widget
 "use strict";
 
 // Pull in the meat of the json-editor functionality
-var Meta = require("$:/plugins/joshuafontany/jsoneditor/jsonMetaSchema.js");
 var JSONEditor = require("$:/plugins/joshuafontany/jsoneditor/jsoneditor.js");
 var Widget = require("$:/core/modules/widgets/widget.js").widget;
 
@@ -72,7 +71,7 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   if(this.editor.ready) {this.saveState();}
   // Insert element
 	parent.insertBefore(this.container,this.nextSibling);
-	this.renderChildren(this.container,null);
+	this.renderChildren(parent,nextSibling);
 	this.domNodes.push(this.container);
 }
 
@@ -87,10 +86,14 @@ JSONEditorWidget.prototype.execute = function() {
     this.state = "$:/state/jsoneditor/"+$tw.utils.jsonStringify(this.getVariable("currentTiddler").replace(/^\$\:\//g, "__"))+"/"
     this.state += this.getStateQualifier(); 
   }
+  this.paramStr = this.getAttribute("param", "{}");
+  this.schemaRef = this.getAttribute("schema", "");
+  this.jsonRoot = this.getAttribute("json", "New Json Tiddler");
+
   this.targets = this.setTargets();
   this.options = this.getOptionsFromAttributes();
   this.options.startval = this.getJsonFromAttributes();
-  if(this.options.show_all){
+  if(this.options.show_all == true){
     this.options.startval = $tw.utils.jsonMerge({}, $tw.utils.jsonSchemaInstance(this.options.schema),this.options.startval);
   }
   // Create root editor
@@ -98,11 +101,11 @@ JSONEditorWidget.prototype.execute = function() {
   this.container.setAttribute("class", "tw-jsoneditor");
   if(this.editor) this.editor.destroy();
   this.editor = new JSONEditor(this.container, this.options);
-  // Workaround for what I think is a bug in jsoneditor
-  if (JSON.stringify(this.options.schema) == "{}" && (this.options.startval == 0)) this.editor.setValue(this.options.startval);
   //Handle state and mode
   this.rebuildEditorNodes();
   // Construct the child widgets
+  //var parser = $tw.wiki.parseText("text/vnd.tiddlywiki", this.container.innerHTML);
+  //var parseTreeNodes = (parser)? parser.tree : [];
   this.makeChildWidgets(this.container);
 };
 
@@ -110,10 +113,6 @@ JSONEditorWidget.prototype.execute = function() {
 Sets the target attribute based on the json textReference
 */
 JSONEditorWidget.prototype.setTargets = function() {
-  this.paramStr = this.getAttribute("param", "{}");
-  this.schemaRef = this.getAttribute("schema", "New Schema Tiddler");
-  this.jsonRoot = this.getAttribute("json", "New Json Tiddler");
-
   var results = {},
   targets = {};
   results[this.schemaRef] = $tw.utils.parseTextReference(this.schemaRef);
@@ -158,11 +157,12 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   var options = optionsValid ? JSON.parse(optionstring) : {};
   /* An attribute named 'param' can pass in a valid schema json string
   /  as a triple quoted string, or as translusion, variable, etc.
+  /  Anything declared in `param` overwrites any value found in `schema`.
   /  Otherwise the 'schema' attribute contains a textReference from which
   /  to retreive the json schema definition. Defaults to '{}' as it still
   /  works with that degenerate case. */
-  var paramObj = {}, schemaObj = {},
-  text = this.wiki.getTextReference(this.schemaRef, "{}", this.currentTiddler),
+  var paramObj = {}, schemaObj = {};
+  var text = this.wiki.getTextReference(this.schemaRef, "{}", this.currentTiddler),
   schemaValid = $tw.utils.jsonIsValid(this.targets[this.schemaRef].title, text) || false,
   paramValid = $tw.utils.jsonIsValid(this.currentTiddler, this.paramStr);
   if (paramValid) { paramObj = JSON.parse(this.paramStr); }
@@ -220,9 +220,19 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     if(this.jsonRoot == "New Json Tiddler"){this.jsonRoot = "$:/temp/json-preview/"+this.getStateQualifier();}
   }
   if(options.mode == "design"){
+    if(this.schemaRef == "") {
+      this.schemaRef = "$:/plugins/joshuafontany/jsoneditor/devMetaSchema4";
+      this.targets = this.setTargets();
+      var text = this.wiki.getTextReference(this.schemaRef, "{}", this.currentTiddler);
+      var metaSchema = JSON.parse(text);
+      options.schema = $tw.utils.jsonMerge(options.schema, metaSchema);
+    }
     // Add extra validation logic for integer schemas that use the `range` format.
     // For integer schemas that use the `range` format we require that minimum and maximum properties are set, too.
     var range_integer_validator = function(schema, value, path) {
+      if (typeof value == "undefined" || value === null){
+        return [{path: path, property: 'maximum', message:'Value undefined'}];
+      }
       var errors = [];
       if(value.type === 'integer' && value.format === 'range') {
           if(typeof value.minimum === 'undefined' || typeof value.maximum === 'undefined') {
@@ -238,6 +248,9 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
 
     // Check that if minimum and maximum are specified, minimum <= maximum
     var min_max_consistence_validator = function(schema, value, path) {
+      if (typeof value == "undefined" || value === null){
+        return [{path: path, property: 'maximum', message:'Value undefined'}];
+      }
       var errors = [];
       if(value.type === 'integer' || value.type === 'number') {
           if(typeof value.minimum !== 'undefined' && typeof value.minimum !== 'undefined' && value.minimum > value.maximum) {
@@ -252,7 +265,19 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     };
 
     options.custom_validators = [ range_integer_validator, min_max_consistence_validator ];
-    options.schema = Meta.jsonMetaSchema;
+    //options.schema = JSON.parse(Meta.jsonMetaSchema);
+    options.enabled = true;
+    options.compact = false;
+    options.disable_array_add = false;
+    options.disable_array_delete = false;
+    options.disable_array_reorder = false;
+    options.enable_array_copy = true;
+    options.disable_collapse = false;
+    options.disable_edit_json = false;
+    options.disable_properties = false;
+    options.array_controls_top = true;
+    options.show_all = false;
+    options.required_by_default = false;
   }
   return options;
 }
@@ -299,48 +324,14 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
   if(this.options.mode == "view") {
     this.rebuildViewEditorNodes();
   }
-  if(this.options.mode == "design") { 
-    //Design Mode
-    var isObjectPropertiesButton = function(node) {
-      // Check whether the node is a properties button for an object,
-      // and not for the schema of an object named properties
-      // Does the path end in '.properties'?
-      if(node.matches('div[data-schemapath$=".properties"] > h3 > div > button.json-editor-btntype-properties')) { 
-        var containingDiv = node.parentElement.parentElement.parentElement;
-        var span = containingDiv.querySelector('h3 > span');
-
-        // Is it an object properties or a property named properties?
-        if(span && span.innerText === 'properties') { 
-            return true;
-        }
-      }
-      return false;
-    };
-
-    this.editor.element.childNodes.forEach(function(node) {
-      if(node.nodeType == 1) {
-        if(isObjectPropertiesButton(node)) {
-            node.querySelector('span').innerText = 'Add/Remove';
-        }
-        else if(node.matches('button.json-editor-btntype-properties')) {
-          // For other properties buttons, remove the 'Properties' label,
-          // and use a cog as icon
-          var icon = node.querySelector('i');
-          icon.classList.remove('fa-pen');
-          icon.classList.add('fa-cog');
-          var span = node.querySelector('span');
-          span.innerText = '';
-        }
-      }
-    });
-      
-    // Add a save button
+  else if(this.options.mode == "design") { 
+    // Add a save button / button template
     var filename = 'schema.json';
     var saveButtonLabel = 'Save';
-    var button = this.root.getButton(saveButtonLabel, 'save', saveButtonLabel);
-    var button_holder = this.root.theme.getHeaderButtonHolder();
+    var button = this.editor.root.getButton(saveButtonLabel, 'save', saveButtonLabel);
+    var button_holder = this.editor.root.theme.getHeaderButtonHolder();
     button_holder.appendChild(button);
-    this.editor.root.header.parentNode.insertBefore(button_holder, this.root.header.nextSibling);
+    this.editor.root.header.parentNode.insertBefore(button_holder, this.editor.root.header.nextSibling);
 
     var jsonEditor = this.editor;
     button.addEventListener('click', function(e) {
@@ -387,6 +378,24 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
   if((this.options.enabled == true) && !editorEnabled) {
     this.editor.enable();
     this.editor.trigger("change");
+  }
+  //Handle edit/view toggle
+  if(this.options.mode == "view" || this.options.mode == "edit"){
+     // Add a view-edit button / button template
+     var toggleButtonLabel = (this.options.mode == "view") ? 'Edit' : 'View';
+     var button = this.editor.root.getButton(toggleButtonLabel, 'toggle', toggleButtonLabel);
+     var button_holder = this.editor.root.theme.getHeaderButtonHolder();
+     button_holder.appendChild(button);
+     this.editor.root.header.parentNode.insertBefore(button_holder, this.editor.root.header.nextSibling);
+ 
+     var jsonEditor = this.editor;
+     button.addEventListener('click', function(e) {
+        e.preventDefault();
+        self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
+        self.saveState();
+        //reset to trigger dirty state refresh
+        self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
+     }, false);
   }
 }
 
@@ -448,6 +457,7 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   var doRefresh = function () {
     self.editor.off("change");
     self.refreshSelf();
+    return true;
   }
   if(changedTiddlers[this.state]){
     var twState = this.wiki.getTextReference(this.state, "{}", this.currentTiddler);
@@ -458,7 +468,6 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
   //If the actual widget attributes have been modified, clear the event listeners and recreate the editor
   if (!modeEq || !modeEq || changedAttributes.param || changedAttributes.schema || changedAttributes.json || changedAttributes.options) {
     doRefresh();
-    return true;
   }
   //If the title of the `schema` target tiddler is in `changedTiddlers`,
   //rebuild the widget
@@ -466,10 +475,9 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
     var options = this.getOptionsFromAttributes();
     options.startval = this.options.startval;
     var opEq = $tw.utils.jsonIsEqual(this.options, options);
-    console.log($tw.utils.jsonDiff(this.options, options)); 
+    //console.log($tw.utils.jsonDiff(this.options, options)); 
     if(!opEq) {
       doRefresh();
-      return true;
     }
   }
   //If the title of the `json` target tiddler is in `changedTiddlers`,
@@ -479,8 +487,9 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
     editorValue = this.editor.getValue();
     var jsonEq = $tw.utils.jsonIsEqual(editorValue, json);
     if(!jsonEq) {
-      this.editor.setValue(json);
-      if(this.options.mode == "view") this.rebuildViewEditorNodes();
+      if (this.options.mode =="design") doRefresh();
+      this.editor.root.setValue(json, true);
+      if (this.options.mode =="view") this.rebuildViewEditorNodes();
     }
   }
   return this.refreshChildren(changedTiddlers);

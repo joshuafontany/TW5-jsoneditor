@@ -10,20 +10,9 @@ Automatically generate html forms in Tiddlywiki from JSON Schema files using:
 
 {{$:/plugins/joshuafontany/jsoneditor/usage}}
 
-! Installation
-
-Drag and drop the following tiddlers into your own wiki:
-
-    * [[joshuafontany/jsoneditor|$:/plugins/joshuafontany/jsoneditor]]
-    * [[@oss/bootstrap4|$:/plugins/@oss/bootstrap4]]
-    * [[TheDiveO/FontAwesome|$:/plugins/TheDiveO/FontAwesome]]
-    * [[joshuafontany/jsonmangler|$:/plugins/joshuafontany/jsonmangler]]
-    * [[ebalster/modloader|$:/plugins/ebalster/modloader]]
-    * [[matabele/action-maketid|$:/plugins/matabele/action-maketid]]
-    
-Alternately, the [[Plugin source code|https://github.com/joshuafontany/TW5-jsoneditor]] page has extractable packages for node.js served wikis.
-
 !!!! Json-Editor Read Me (From [[JSONEditor|https://github.com/json-editor/json-editor]])
+
+I have included the original Read Me for json-editor for convenience:
 
 <$reveal type="nomatch" state="$:/config/plugins/joshuafontany/jsoneditor!!jereadme" text="show">
 
@@ -37,3 +26,4 @@ Alternately, the [[Plugin source code|https://github.com/joshuafontany/TW5-jsone
 {{$:/plugins/joshuafontany/jsoneditor/jsoneditor-readme.md}}
 
 </$reveal>
+

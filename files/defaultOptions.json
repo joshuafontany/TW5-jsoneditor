@@ -14,7 +14,7 @@
     "iconlib": "fontawesome5",
     "no_additional_properties": false,
     "refs": {},
-    "required_by_default": true,
+    "required_by_default": false,
     "keep_oneof_values": true,
     "schema": {},
     "show_errors": "interaction",

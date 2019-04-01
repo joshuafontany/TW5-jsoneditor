@@ -3642,6 +3642,37 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       });
       this.addproperty_controls.appendChild(this.addproperty_button);
       this.addproperty_controls.appendChild(this.addproperty_holder);
+      if(this.jsoneditor.options.mode == "design"){
+        //Design Mode
+        var isObjectPropertiesButton = function(node) {
+          // Check whether the node is a properties button for an object,
+          // and not for the schema of an object named properties
+          // Does the path end in '.properties'?
+          if(node.matches('div[data-schemapath$=".properties"] > h3 > div > button.json-editor-btntype-properties')) { 
+            var containingDiv = node.parentElement.parentElement.parentElement;
+            var span = containingDiv.querySelector('h3 > span');
+            // Is it an object properties or a property named properties?
+            if(span && span.innerText === 'properties') { 
+                return true;
+            }
+          }
+          return false;
+        };
+        if(isObjectPropertiesButton(this.addproperty_button)) {
+          this.addproperty_button.querySelector('span').innerText = 'Add/Remove';
+        }
+        else if(this.addproperty_button.matches('button.json-editor-btntype-properties')) {
+          // For other properties buttons, remove the 'Properties' label,
+          // and use a cog as icon
+          var icon = this.addproperty_button.querySelector('i');
+          icon.classList.remove('fa-pen');
+          icon.classList.add('fa-cog');
+          var span = this.addproperty_button.querySelector('span');
+          span.innerText = '';
+        }
+
+      }
+
       this.refreshAddProperties();
     }
             
@@ -5587,7 +5618,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
 
       self.validators[i] = new JSONEditor.Validator(self.jsoneditor,schema,validator_options);
     });
-
+    this.type = 
     this.switchEditor(0);
   },
   onChildEditorChange: function(editor) {
@@ -5621,7 +5652,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
 
     var type_changed = this.type != prev_type;
     if (type_changed) {
-	this.switchEditor(this.type);
+	  this.switchEditor(this.type);
     }
 
     this.editors[this.type].setValue(val,initial);
