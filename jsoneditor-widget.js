@@ -217,7 +217,7 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
   if(options.mode == "preview"){
     // Preview mode for a Schema Editor
     options.no_additional_properties = true;
-    if(this.jsonRoot == "New Json Tiddler"){this.jsonRoot = "$:/temp/json-preview/"+this.getStateQualifier();}
+    this.jsonRoot = "$:/temp/json-preview/"+this.getStateQualifier();
   }
   if(options.mode == "design"){
     if(this.schemaRef == "") {
@@ -287,7 +287,6 @@ Rebuilds the domNodes if the editor is in view mode to allow transcluded content
 Resets the collapsed states from this.stateObj.collapsed
 */
 JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
-  if (this.targets[this.jsonRoot].type == "field") return;
   var isHiddenInput = function(node) {
     // Input? maches type?
     var viewTypes = ["text","textarea", "tel", "url", "number", "email"];
