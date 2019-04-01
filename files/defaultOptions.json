@@ -22,5 +22,6 @@
     "template": "default",
     "theme": "bootstrap4",
     "display_required_only": false,
-    "prompt_before_delete": true
+    "prompt_before_delete": true,
+    "view_toggle": false
 }

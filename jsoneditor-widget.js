@@ -218,6 +218,8 @@ JSONEditorWidget.prototype.getOptionsFromAttributes = function() {
     // Preview mode for a Schema Editor
     options.no_additional_properties = true;
     this.jsonRoot = "$:/temp/json-preview/"+this.getStateQualifier();
+    //refresh targets
+    this.targets = this.setTargets();
   }
   if(options.mode == "design"){
     if(this.schemaRef == "") {
@@ -379,10 +381,11 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
     this.editor.trigger("change");
   }
   //Handle edit/view toggle
-  if(this.options.mode == "view" || this.options.mode == "edit"){
+  if((this.options.mode == "view" || this.options.mode == "edit") && this.options.view_toggle == true){
      // Add a view-edit button / button template
      var toggleButtonLabel = (this.options.mode == "view") ? 'Edit' : 'View';
-     var button = this.editor.root.getButton(toggleButtonLabel, 'toggle', toggleButtonLabel);
+     var button = this.editor.root.getButton(toggleButtonLabel, 'save', toggleButtonLabel);
+
      var button_holder = this.editor.root.theme.getHeaderButtonHolder();
      button_holder.appendChild(button);
      this.editor.root.header.parentNode.insertBefore(button_holder, this.editor.root.header.nextSibling);
@@ -390,9 +393,8 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
      var jsonEditor = this.editor;
      button.addEventListener('click', function(e) {
         e.preventDefault();
-        self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
         self.saveState();
-        //reset to trigger dirty state refresh
+        //saveState first to trigger dirty state refresh
         self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
      }, false);
   }
