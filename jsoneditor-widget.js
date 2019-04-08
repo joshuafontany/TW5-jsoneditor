@@ -294,8 +294,6 @@ JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
     }
     return false;
   };
-
-  this.children = [];
   var self = this, currentValue = this.editor.root.getValue();
   var inputNodes = this.editor.element.querySelectorAll('.tw-jsoneditor div.form-group .form-control');
   inputNodes.forEach(function(node) {
@@ -501,9 +499,7 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
       if (this.options.mode =="view") this.rebuildViewEditorNodes();
     }
   }
-
-  if(this.refreshChildren(changedTiddlers)) this.rebuildViewEditorNodes();
-  return false;
+  return this.refreshChildren(changedTiddlers);
 };
 
 exports.jsoneditor = JSONEditorWidget;
