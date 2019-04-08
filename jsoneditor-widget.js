@@ -58,21 +58,11 @@ JSONEditorWidget.prototype.render = function(parent,nextSibling) {
   this.currentTiddler = this.getVariable("currentTiddler");
   this.computeAttributes();
   this.execute();
-  this.bcb = this.addBoundCallbacks.bind(this);
-  this.editor.on("change", this.bcb); //Always ignore first call to change callbacks
-  //Other Callbacks
-  var elements = this.container.querySelectorAll(".json-editor-btn-collapse");
-  elements.forEach((el) =>{
-    el.addEventListener("click", function(e) {
-      //console.log("saveState:"+self.jsonRoot);
-      self.saveState(e); /* autosave state */
-    });
-  });
   if(this.editor.ready) {this.saveState();}
   // Insert element
-	parent.insertBefore(this.container,this.nextSibling);
-	this.renderChildren(parent,nextSibling);
-	this.domNodes.push(this.container);
+	parent.insertBefore(this.domNode,this.nextSibling);
+  //this.renderChildren(parent,nextSibling);
+	this.domNodes.push(this.domNode);
 }
 
 /*
@@ -97,20 +87,26 @@ JSONEditorWidget.prototype.execute = function() {
     this.options.startval = $tw.utils.jsonMerge({}, $tw.utils.jsonSchemaInstance(this.options.schema),this.options.startval);
   }
   // Create root editor
-  this.container = this.document.createElement('div');
-  this.container.setAttribute("class", "tw-jsoneditor");
+  this.domNode = this.document.createElement('div');
+  this.domNode.setAttribute("class", "tw-jsoneditor");
   if(this.editor) this.editor.destroy();
-  this.editor = new JSONEditor(this.container, this.options);
+  this.editor = new JSONEditor(this.domNode, this.options);
   //Handle state and mode
   this.rebuildEditorNodes();
-  // Construct the child widgets
-  //var parser = $tw.wiki.parseText("text/vnd.tiddlywiki", this.container.innerHTML);
-  //var parseTreeNodes = (parser)? parser.tree : [];
-  this.makeChildWidgets(this.container);
+  //Callbacks
+  this.bcb = this.addBoundCallbacks.bind(this);
+  this.editor.on("change", this.bcb); //Always ignore first call to change callbacks
+  var elements = this.domNode.querySelectorAll(".json-editor-btn-collapse");
+  elements.forEach((el) =>{
+    el.addEventListener("click", function(e) {
+      //console.log("saveState:"+self.jsonRoot);
+      self.saveState(e); /* autosave state */
+    });
+  });
 };
 
 /*
-Sets the target attribute based on the json textReference
+Sets the target attribute based on the schema and json textReferences
 */
 JSONEditorWidget.prototype.setTargets = function() {
   var results = {},
@@ -290,7 +286,7 @@ Resets the collapsed states from this.stateObj.collapsed
 */
 JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
   var isHiddenInput = function(node) {
-    // Input? maches type?
+    // Input matches type?
     var viewTypes = ["text","textarea", "tel", "url", "number", "email"];
     var nodeType = node.getAttribute("type");
     if(( node.tagName.toLowerCase() == "input" && viewTypes.indexOf(nodeType) != -1 ) || node.tagName == "textarea" ) {
@@ -298,23 +294,33 @@ JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
     }
     return false;
   };
+
+  this.children = [];
   var self = this, currentValue = this.editor.root.getValue();
-  var inputNodes = this.editor.element.querySelectorAll('.tw-jsoneditor div.form-group .form-control');;
+  var inputNodes = this.editor.element.querySelectorAll('.tw-jsoneditor div.form-group .form-control');
   inputNodes.forEach(function(node) {
     if(node.nodeType == 1) {
       if(isHiddenInput(node)) {
         node.setAttribute("hidden", true);
-        var itemPath = node.getAttribute("name");
-        itemPath = itemPath.replace(self.jsonRoot+"[", "/").replace(/\]\[/g, '/').replace(/\]/g, '');
+        var itemName = node.getAttribute("name");
+        var itemPath = itemName.replace(self.jsonRoot+"[", "/").replace(/\]\[/g, '/').replace(/\]/g, '');
         var itemText = $tw.utils.jsonGet(currentValue, itemPath);
-        /* Working-ish */
+        /* Render the widget into the fakeDom */
+        var parsed = $tw.wiki.parseText("text/vnd.tiddlywiki", itemText, {});
+        var widgetTree = $tw.wiki.makeWidget(parsed, {variables: self.variables});
+        var container = $tw.fakeDocument.createElement("div");
+        widgetTree.render(container, null);
+        /* Create a parent dom node for the content */
         var div = self.document.createElement("div");
-        div.innerText = itemText;
         div.setAttribute("name", node.getAttribute("name"));
         div.className = "tc-jsoneditor-view";
+        div.innerHTML = container.innerHTML;
+        /* Insert rendered nodes into the editor's domTree @ here*/
         var oldDiv = node.parentNode.querySelector(".tc-jsoneditor-view");
         if (oldDiv) oldDiv.parentNode.replaceChild(div, oldDiv);
         else node.parentNode.insertBefore(div, node.nextSibling);
+        /* push the widgetTree to this.children for the refresh mechanism*/
+        self.children.push(widgetTree);
       }
     }
   });
@@ -393,8 +399,9 @@ JSONEditorWidget.prototype.rebuildEditorNodes = function() {
      var jsonEditor = this.editor;
      button.addEventListener('click', function(e) {
         e.preventDefault();
+        self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
         self.saveState();
-        //saveState first to trigger dirty state refresh
+        //reset to trigger dirty state refresh
         self.options.mode = (self.options.mode == "view") ? 'edit' : 'view';
      }, false);
   }
@@ -493,7 +500,9 @@ JSONEditorWidget.prototype.refresh = function(changedTiddlers) {
       if (this.options.mode =="view") this.rebuildViewEditorNodes();
     }
   }
-  return this.refreshChildren(changedTiddlers);
+
+  if(this.refreshChildren(changedTiddlers)) this.rebuildViewEditorNodes();
+  return false;
 };
 
 exports.jsoneditor = JSONEditorWidget;
