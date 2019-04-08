@@ -307,18 +307,19 @@ JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
         var itemText = $tw.utils.jsonGet(currentValue, itemPath);
         /* Render the widget into the fakeDom */
         var parsed = $tw.wiki.parseText("text/vnd.tiddlywiki", itemText, {});
-        var widgetTree = $tw.wiki.makeWidget(parsed, {variables: self.variables});
-        var container = $tw.fakeDocument.createElement("div");
+        var widgetTree = self.makeChildWidget(parsed.tree[0] || [], {variables: self.variables});
+        widgetTree.parentWidget = self;
+                /* Create a parent dom node for the content */
+        var container = self.document.createElement("div");
         widgetTree.render(container, null);
-        /* Create a parent dom node for the content */
-        var div = self.document.createElement("div");
-        div.setAttribute("name", node.getAttribute("name"));
-        div.className = "tc-jsoneditor-view";
-        div.innerHTML = container.innerHTML;
+        //var div = self.document.createElement("div");
+        container.setAttribute("name", node.getAttribute("name"));
+        container.className = "tc-jsoneditor-view";
+        //div.innerHTML = container.innerHTML;
         /* Insert rendered nodes into the editor's domTree @ here*/
         var oldDiv = node.parentNode.querySelector(".tc-jsoneditor-view");
-        if (oldDiv) oldDiv.parentNode.replaceChild(div, oldDiv);
-        else node.parentNode.insertBefore(div, node.nextSibling);
+        if (oldDiv) oldDiv.parentNode.replaceChild(container, oldDiv);
+        else node.parentNode.insertBefore(container, node.nextSibling);
         /* push the widgetTree to this.children for the refresh mechanism*/
         self.children.push(widgetTree);
       }
