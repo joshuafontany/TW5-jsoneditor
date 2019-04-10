@@ -26,7 +26,7 @@
   </ul>
   <h1 class="">Installation</h1>
   
-<div><p>Go to the example wiki: https://joshuafontany.github.io/TW5-jsoneditor/</p><p>Drag and drop the following tiddlers into your own wiki:</p><ul><li><b>joshuafontany/jsoneditor</b></li><li><b>@oss/bootstrap4</b></li><li><b>TheDiveO/FontAwesome</b></li><li><b>joshuafontany/jsonmangler</b></li><li><b>ebalster/modloader</b></li><li><b>matabele/action-maketid</b></li></ul><p>Alternately, clone this repository into your TiddlyWiki5 root in a `plugins/joshuafontany/jsoneditor` folder, or the Releases page has extractable packages for node.js served wikis. Place these in your TiddlyWiki5 root folder and unzip them by selecting `Extract Here` (7zip) or `Extract to here` (Winzip).</p></div>
+<div><p>Go to the example wiki: https://joshuafontany.github.io/TW5-jsoneditor/</p><p>Drag and drop the following tiddlers into your own wiki:</p><ul><li><b>$:/plugin/joshuafontany/jsoneditor</b></li><li><b>$:/plugin/@oss/bootstrap4</b></li><li><b>$:/plugin/TheDiveO/FontAwesome</b></li><li><b>$:/plugin/joshuafontany/jsonmangler</b></li><li><b>$:/plugin/ebalster/modloader</b></li><li><b>$:/plugin/matabele/action-maketid</b></li></ul><p>Alternately, clone this repository into your TiddlyWiki5 root in a `plugins/joshuafontany/jsoneditor` folder, or the Releases page has extractable packages for node.js served wikis. Place these in your TiddlyWiki5 root folder and unzip them by selecting `Extract Here` (7zip) or `Extract to here` (Winzip).</p></div>
 
 
 <h2>Using Json Editor</h2>
