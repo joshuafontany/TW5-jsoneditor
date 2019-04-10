@@ -17,6 +17,7 @@
     "required_by_default": false,
     "keep_oneof_values": true,
     "schema": {},
+    "show_all": true,
     "show_errors": "interaction",
     "startval": null,
     "template": "default",

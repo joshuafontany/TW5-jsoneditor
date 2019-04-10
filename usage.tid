@@ -5,7 +5,9 @@ title: $:/plugins/joshuafontany/jsoneditor/usage
 
 ! Introduction
 
-The jsoneditor widget generates and displays an HTML form constructed from the given [[JSON Schema|http://json-schema.org/]]. It does this by wrapping a TiddlyWiki widget around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin except for Bootstrap4 and FontAwesome5.
+The jsoneditor widget generates and displays an HTML form constructed from a [[JSON Schema|http://json-schema.org/]].
+
+It does this by wrapping a TiddlyWiki widget around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin except for Bootstrap4 and FontAwesome5.
 
 The schema must be in [[JSON Schema format|http://json-schema.org/draft-04/json-schema-core.html]] and can reside in:
 
@@ -15,9 +17,11 @@ The schema must be in [[JSON Schema format|http://json-schema.org/draft-04/json-
 
 ! Attributes
 
-A [[TiddlyWiki|https://tiddlywiki.com]] [[TextReference|https://tiddlywiki.com/#TextReference]] is used to specify the `schema` attribute. The `json` attribute holds a [[TextReference|https://tiddlywiki.com/#TextReference]] corresponding to the location the form values are saved to and restored from.
+A [[TiddlyWiki|https://tiddlywiki.com]] [[TextReference|https://tiddlywiki.com/#TextReference]] is used to specify the `schema` attribute. The `json` attribute holds a [[TextReference|https://tiddlywiki.com/#TextReference]] corresponding to the location the data values are saved to and restored from.
 
-Two optional attributes can be included. Both parse the attribute value as a json object. This can be used to pass data with triple-quoted text, transclusion, variables, macros, etc. `param` can be used to include a schema object which overrides any options given in the `schema` location. This is useful for applying small modifications to an existing schema for specific cases. `options` is a way to change the default rendering setting: if in view or edit mode (see below), if collapsed, if fields show labels, the startval of the form, etc. These things cannot be set from within the `schema` object (which has it's own set of options).
+Two optional attributes can be included. `param` can be used to include a schema object (or partial object) which overrides any options given in the `schema` attribute. This is useful for applying small modifications to an existing schema for specific cases. `options` is a way to change the default rendering setting: if in view or edit mode (see below), if collapsed, if fields show labels, the startval of the form, etc. These things cannot be set from within the `schema` object (which has it's own set of options).
+
+Both parse the attribute value as a json object, such as ``{"mode":"design"}``. The attribute value is used to generate the param and options objects. This is so we can pass data to the widget with triple-quoted text, transclusion, variables, macros, etc. Because the `json` and `schema` attributes are passed as Text References, these can be stored in other locations in the wiki and transcluded into the widget using the normal wiki syntax.
 
 |!Attribute |!Description |
 | `json` |A [[TextReference|https://tiddlywiki.com/#TextReference]] telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|
@@ -27,25 +31,25 @@ Two optional attributes can be included. Both parse the attribute value as a jso
 
 ! Options
 
-The jsoneditor widget accepts all native json-editor options in the `options` Attribute - but the default options are setup slightly differently (see the [[tiddlywiki-specific defaults|$:/plugins/joshuafontany/jsoneditor/defaultOptions]]). You may edit the `defaultOptions` shadowtiddler to change the tiddilywiki-wide editor behaviour. All json-editor options are described in the [[Json-Editor Read Me|$:/plugins/joshuafontany/jsoneditor/jsoneditor-readme.md]]. The options attribute also accepts TW5 widget-specific options. These modify the behaviour of the tiddlywiki widget in the widget-tree, and thus affect the rendered DOM-tree and html output.
+All json-editor options are described in the [[Json-Editor Read Me|$:/plugins/joshuafontany/jsoneditor/jsoneditor-readme.md]]. The jsoneditor widget accepts all native json-editor options in the `options` attribute - but the default options are setup slightly differently (see the [[tiddlywiki-specific defaults|$:/plugins/joshuafontany/jsoneditor/defaultOptions]]). You may edit the `defaultOptions` shadowtiddler to change the tiddilywiki-wide editor behaviour. The options attribute also accepts TW5 widget-specific options. These modify the behaviour of the tiddlywiki widget in the widget-tree, and thus affect the rendered DOM-tree and html output.
 
-These are the most commonly used editor options used to change the look of the editor.
+These are the most commonly used editor options, used to change the look of the editor:
 
-|!<span style="white-space: nowrap">Editor Options</span> |!Description |
+|!<span style="white-space: nowrap">Editor Option</span> |!Description |
 | `iconlib` |Defaults to `fontawesome5`. An optional icon library to use. See the available Icon Libraries in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]] |
 | `theme` |Defaults to `bootstrap4`. A value such as ``html``, ``bootstrap2``, ``bootstrap3``, ``foundation3``, etc. as describe in the [[jsoneditor documentation|https://github.com/json-editor/json-editor]]. Adding the given bootstrap, foundation, etc. stylesheet to your tiddlywiki is a prerequisite to using this option. For ``bootstrap4``, for example, you can use the [[bootstrap4 css|http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css]] and  follow the instructions at [[using Stylesheets|http://tiddlywiki.com/#Using%20Stylesheets]]. The a schema with a ``format`` key set to  ``grid`` only work if you use a theme other than the default (``html``). |
 
 These are tiddlywiki widget-specific options.
 
-|!<span style="white-space: nowrap">Widget Options</span> |!Description |
-| `enabled` |Defaults to `true`. If set to `false`, all active editors are disabled. |
-| `mode` |Valid vaues are `edit`, `view`, and `design`, and `preview`. Defaults to `edit`, the normal json-editor mode. |
-| `show_all` |Defaults to `true`, except in design-mode where it defaults to false. Due to the quirky way json-editor parses schemas, if a schema has the `required` key set but also has other non-required properties defined - AND the starting json value does not have existing data for the non-required properties, then those editors are not rendered. If `disable_properties` is also set to `true` then the user can never access those missing property editors. Setting `show_all` to `true` fills in the starting json's keys with blank strings, etc, as a patch around this problem. To disable this patch, set this option to `false`. |
+|!<span style="white-space: nowrap">Widget Option</span> |!Description |
+| `enabled` |Defaults to `true`. If set to `false`, all active editors within the widget are disabled. |
+| `mode` |Valid vaues are `edit`, `view`, `design`, and `preview`. Defaults to `edit` - the normal json-editor mode. See the table below for more details.|
+| `show_all` |Defaults to `true`, except in design-mode where it defaults to `false`. Due to the quirky way json-editor parses schemas, if a schema has the `required` key set but also has other non-required properties defined - AND the starting json value does not have existing data for the non-required properties, then those editors are not rendered. If `disable_properties` is also set to `true` then the user can never access those missing property editors. Setting `show_all` to `true` fills in the starting json's keys with blank strings, etc, as a patch around this problem. To disable this patch, set this option to `false`. |
 
-|!<span style="white-space: nowrap">Widget Modes</span> |!Description |
+|!<span style="white-space: nowrap">Widget Mode</span> |!Description |
 | `edit` |Default mode, renders a normal json-editor based on the options and schema inputs. |
-| `view` |When set to `view` mode the widget hides all "text","textarea", "tel", "url", "number", and "email" input elements and instead displays the value found at that location in the input's place (wikification not yet supported). You can disable all active input elements by also setting the `enabled` key to `false` in the `options` object. If you set the `options` object to have `"view_toggle": true` then a button will be rendered allowing you to toggle between `view` and `edit` modes. |
-| `design` |Setting the mode to `design` creates an editor where the data json object being edited is a Json Schema. This allows the user to design schemas (and thus forms) without directly editing Json text. In `design` mode the `schema` and `param` attributes are not required, and the generated Json Schema is saved to the `json` attribute [[TextReference|https://tiddlywiki.com/#TextReference]]. |
+| `view` |When set to `view` mode the widget hides all "text","textarea", "tel", "url", "number", and "email" input elements and instead displays the value found at that location in the input's place. All content displayed is fully wikified and active, meaning buttons can send messages to handlers, transcluded content is displayed correctly, etc. You can disable all of the input elements that remain active by also setting `"enabled": false` in the `options` object. If you set the `options` object to have `"view_toggle": true` then a button will be rendered allowing you to toggle between `view` and `edit` modes. |
+| `design` |Setting the mode to `design` creates an editor where the data json being edited is a Json Schema. This allows the user to design schemas (and thus forms) with UI assistance, instead of directly editing Json text. In `design` mode the `schema` and `param` attributes are not required, and the generated Json Schema is saved to the `json` attribute [[TextReference|https://tiddlywiki.com/#TextReference]]. |
 | `preview` |This mode is used to preview schemas designed by another widget in `design` mode. Set the `schema` attribute of this widget to the same [[TextReference|https://tiddlywiki.com/#TextReference]] as the `json` attribute of the designer widget. The data from editors in preview-mode is automatically saved to a temp tiddler. |
 
 !![[Using Json Editor]]

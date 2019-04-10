@@ -94,6 +94,7 @@ JSONEditorWidget.prototype.execute = function() {
   //Handle state and mode
   this.rebuildEditorNodes();
   //Callbacks
+  var self = this;
   this.bcb = this.addBoundCallbacks.bind(this);
   this.editor.on("change", this.bcb); //Always ignore first call to change callbacks
   var elements = this.domNode.querySelectorAll(".json-editor-btn-collapse");
@@ -301,6 +302,7 @@ JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
       if(isHiddenInput(node)) {
         node.setAttribute("hidden", true);
         var itemName = node.getAttribute("name");
+        if(typeof itemName == "null" || typeof itemName == "undefined") return;
         var itemPath = itemName.replace(self.jsonRoot+"[", "/").replace(/\]\[/g, '/').replace(/\]/g, '');
         var itemText = $tw.utils.jsonGet(currentValue, itemPath);
         /* Render the widget into the fakeDom */
