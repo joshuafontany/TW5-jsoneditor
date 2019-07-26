@@ -3,7 +3,7 @@
 </h2>
 <div class="tc-tiddler-body tc-reveal">
   <h1 class="">Json Editor for <a class="tc-tiddlylink tc-tiddlylink-missing" href="https://tiddlywiki.com/" target="_blank">TiddlyWiki5</a>,
-    Version 0.0.5</h1>
+    Version 0.0.6</h1>
   <p>Automatically generate html forms in Tiddlywiki from JSON Schema files using:</p>
   <p><a class="tc-tiddlylink-external" href="https://github.com/json-editor/json-editor" rel="noopener noreferrer"
       target="_blank">Json-Editor for Javascript</a></p>
@@ -26,7 +26,7 @@
   </ul>
   <h1 class="">Installation</h1>
   
-<div><p>Go to the example wiki: https://joshuafontany.github.io/TW5-jsoneditor/</p><p>Drag and drop the following tiddlers into your own wiki:</p><ul><li><b>$:/plugin/joshuafontany/jsoneditor</b></li><li><b>$:/plugin/@oss/bootstrap4</b></li><li><b>$:/plugin/TheDiveO/FontAwesome</b></li><li><b>$:/plugin/joshuafontany/jsonmangler</b></li><li><b>$:/plugin/ebalster/modloader</b></li><li><b>$:/plugin/matabele/action-maketid</b></li></ul><p>Alternately, clone this repository into your TiddlyWiki5 root in a `plugins/joshuafontany/jsoneditor` folder, or the Releases page has extractable packages for node.js served wikis. Place these in your TiddlyWiki5 root folder and unzip them by selecting `Extract Here` (7zip) or `Extract to here` (Winzip).</p></div>
+<div><p>Go to the example wiki: https://joshuafontany.github.io/TW5-jsoneditor/</p><p>Drag and drop the following tiddlers into your own wiki:</p><ul><li><b>$:/plugin/joshuafontany/jsoneditor</b></li><li><b>$:/plugin/@oss/bootstrap4</b></li><li><b>$:/plugin/TheDiveO/FontAwesome</b></li><li><b>$:/plugin/joshuafontany/jsonmangler</b></li><li><b>$:/plugin/ebalster/modloader</b></li><li><b>$:/plugin/matabele/action-maketid</b></li></ul><p>Alternately clone this repository into your TiddlyWiki5 root into a `plugins/joshuafontany/jsoneditor` folder, and drag and drop the other tiddlers. If you want a "minified" version the Releases page has extractable packages for node.js served wikis. Place these in your TiddlyWiki5 root folder and unzip them by selecting `Extract Here` (7zip) or `Extract to here` (Winzip).</p></div>
 
 
 <h2>Using Json Editor</h2>

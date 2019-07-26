@@ -18,6 +18,14 @@
       }
     },
     {
+      "file": "jsoneditor.css",
+      "fields": {
+        "type": "text/css",
+        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor.css",
+        "tags": "$:/tags/Stylesheet"
+      }
+    },
+    {
       "file": "defaultOptions.json",
       "fields": {
         "type": "application/json",

@@ -7,7 +7,7 @@ title: $:/plugins/joshuafontany/jsoneditor/usage
 
 The jsoneditor widget generates and displays an HTML form constructed from a [[JSON Schema|http://json-schema.org/]].
 
-It does this by wrapping a TiddlyWiki widget around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin except for Bootstrap4 and FontAwesome5.
+It does this by wrapping a TiddlyWiki widget around the [[json-editor|https://github.com/json-editor/json-editor]] package. None of the optional requirements (css frameworks, icons, etc.) of json-editor are included in this plugin except for [[Bootstrap4]] and [[FontAwesome5]].
 
 The schema must be in [[JSON Schema format|http://json-schema.org/draft-04/json-schema-core.html]] and can reside in:
 
@@ -21,7 +21,7 @@ A [[TiddlyWiki|https://tiddlywiki.com]] [[TextReference|https://tiddlywiki.com/#
 
 Two optional attributes can be included. `param` can be used to include a schema object (or partial object) which overrides any options given in the `schema` attribute. This is useful for applying small modifications to an existing schema for specific cases. `options` is a way to change the default rendering setting: if in view or edit mode (see below), if collapsed, if fields show labels, the startval of the form, etc. These things cannot be set from within the `schema` object (which has it's own set of options).
 
-Both parse the attribute value as a json object, such as ``{"mode":"design"}``. The attribute value is used to generate the param and options objects. This is so we can pass data to the widget with triple-quoted text, transclusion, variables, macros, etc. Because the `json` and `schema` attributes are passed as Text References, these can be stored in other locations in the wiki and transcluded into the widget using the normal wiki syntax.
+Both attributes parse their value as a json object, such as ``{"mode":"design"}``. The value is parsed to generate the param and options objects. This is so we can pass data to the widget with triple-quoted text, transclusion, variables, macros, etc. Because the `json` and `schema` attributes are passed as Text References, these can also be stored in other locations in the wiki and transcluded into the widget using the normal wiki syntax.
 
 |!Attribute |!Description |
 | `json` |A [[TextReference|https://tiddlywiki.com/#TextReference]] telling where to load the JSON data from and save the JSON data to. Defaults to a [[New Json Tiddler]]|

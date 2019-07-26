@@ -302,7 +302,7 @@ JSONEditorWidget.prototype.rebuildViewEditorNodes = function (){
       if(isHiddenInput(node)) {
         node.setAttribute("hidden", true);
         var itemName = node.getAttribute("name");
-        if(typeof itemName == "null" || typeof itemName == "undefined") return;
+        if(typeof itemName == typeof null || typeof itemName === "undefined") return;
         var itemPath = itemName.replace(self.jsonRoot+"[", "/").replace(/\]\[/g, '/').replace(/\]/g, '');
         var itemText = $tw.utils.jsonGet(currentValue, itemPath);
         /* Render the widget into the fakeDom */

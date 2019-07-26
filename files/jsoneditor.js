@@ -2,7 +2,7 @@
  * @name JSON Editor
  * @description JSON Schema Based Editor
  * This library is the continuation of jdorn's great work (see also https://github.com/jdorn/json-editor/issues/800)
- * @version 1.3.5
+ * @version 1.3.5.tw-dev
  * @author Jeremy Dorn
  * @see https://github.com/jdorn/json-editor/
  * @see https://github.com/json-editor/json-editor
@@ -3380,7 +3380,6 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
   },
   build: function() {
     var self = this;
-
     var isCategoriesFormat = (this.format === 'categories');
     this.rows=[];
     this.active_tab = null;
@@ -3411,9 +3410,13 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     }
     // If the object should be rendered as a div
     else {
-      this.header = document.createElement('span');
-      this.header.textContent = this.getTitle();
-      this.title = this.theme.getHeader(this.header);
+      if(!this.options.compact) {
+        this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+        this.title = this.theme.getHeader(this.header);
+      }
+      else {
+        this.title = this.theme.getHeader("");
+      }
       this.container.appendChild(this.title);
       this.container.style.position = 'relative';
 
@@ -3672,10 +3675,16 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         }
 
       }
-
       this.refreshAddProperties();
     }
-            
+    // Compact flag
+    if(this.options.compact) {
+      this.container.classList.add('compact');
+    }
+    var hidden = (this.options.compact && this.options.disable_properties && this.options.disable_edit_json && this.options.disable_collapse);
+    if(hidden) {
+      this.title.container.style.display = 'none';
+    }
     // Fix table cell ordering
     if(this.options.table_row) {
       this.editor_holder = this.container;
@@ -5618,7 +5627,6 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
 
       self.validators[i] = new JSONEditor.Validator(self.jsoneditor,schema,validator_options);
     });
-    this.type = 
     this.switchEditor(0);
   },
   onChildEditorChange: function(editor) {
@@ -5652,7 +5660,7 @@ JSONEditor.defaults.editors.multiple = JSONEditor.AbstractEditor.extend({
 
     var type_changed = this.type != prev_type;
     if (type_changed) {
-	  this.switchEditor(this.type);
+	this.switchEditor(this.type);
     }
 
     this.editors[this.type].setValue(val,initial);
