@@ -5,7 +5,7 @@
     "author": "Joshua Fontany",
     "version": "0.0.6",
     "list": "readme usage license",
-    "core-version": ">=5.1.19",
+    "core-version": ">=5.1.20",
     "source": "https://github.com/joshuafontany/TW5-jsoneditor",
     "plugin-type": "plugin"
 }
