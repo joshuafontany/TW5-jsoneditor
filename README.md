@@ -4,6 +4,7 @@
 <div class="tc-tiddler-body tc-reveal">
   <h1 class="">Json Editor for <a class="tc-tiddlylink tc-tiddlylink-missing" href="https://tiddlywiki.com/" target="_blank">TiddlyWiki5</a>,
     Version 0.0.6</h1>
+    <p>Requires <i>TiddlyWiki 5.1.20</i></p>
   <p>Automatically generate html forms in Tiddlywiki from JSON Schema files using:</p>
   <p><a class="tc-tiddlylink-external" href="https://github.com/json-editor/json-editor" rel="noopener noreferrer"
       target="_blank">Json-Editor for Javascript</a></p>

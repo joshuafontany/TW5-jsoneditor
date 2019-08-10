@@ -1,6 +1,6 @@
 {
     "title": "$:/plugins/joshuafontany/jsoneditor",
-    "description": "JSONEditor: Generate html forms from JSON schema",
+    "description": "JSON Editor: Generate html forms from JSON schema",
     "dependents": "$:/plugins/TheDiveO/FontAwesome $:/plugins/@oss/bootstrap4 $:/plugins/joshuafontany/jsonmangler $:/plugins/ebalster/modloader $:/plugins/matabele/action-maketid",
     "author": "Joshua Fontany",
     "version": "0.0.6",

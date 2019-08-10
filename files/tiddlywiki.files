@@ -1,13 +1,6 @@
 {
   "tiddlers": [
     {
-      "file": "jsoneditor-readme.md",
-      "fields": {
-        "type": "text/markdown",
-        "title": "$:/plugins/joshuafontany/jsoneditor/jsoneditor-readme.md"
-      }
-    },
-    {
       "file": "jsoneditor.js",
       "prefix": "if($tw.browser){\n",
       "suffix": "\n}",
