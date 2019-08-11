@@ -1,0 +1,10 @@
+created: 20190727001706223
+flat: false
+modified: 20190811225203585
+schema: $:/jsonui/tag/Character/view/schema
+sort: false
+tags: 
+title: $:/jsonui/tag/Character/edit/data
+type: application/json
+
+{"data":{"aka":"''A.K.A.:'' <$edit-text field='aka'/>","faction":"''Faction:'' <$edit-text field='faction'/>","first-name":"''First Name:'' <$edit-text field='first-name'/>","known-associates":"''Known Associates:''<br/><$edit-text field='known-associates' tag='textarea'/>","last-name":"''Last Name:'' <$edit-text field='last-name'/>","rank":"''Rank:'' <$edit-text field='rank'/>"},"metadata":{"actors-live":"''Live Actors:'' <br/><$edit-text field='actors-live' tag='textarea'/>","actors-screen":"''Screen Actors:'' <br/><$edit-text field='actors-screen' tag='textarea'/>","actors-voice":"''Voice Actors:'' <br/><$edit-text field='actors-voice' tag='textarea'/>","appearance-films":"''Film Appearances:'' <br/><$edit-text field='appearance-films' tag='textarea'/>","appearance-games":"''Game Appearances:'' <br/><$edit-text field='appearance-games' tag='textarea'/>","appearance-notable":"''Other Notable Appearances:'' <br/><$edit-text field='appearance-notable' tag='textarea'/>","films":null,"reference-url":"''Reference Link:'' <$edit-text field='reference-url'/>","screen-actors":null,"voice-actors":null},"portrait":{"caption":"''Caption:'' <$edit-text field='caption' size='64'/>","portrait-source":"<img src={{!!portrait-source}} /><br/>''URL:'' <$edit-text field='portrait-source' size='64'/>"}}

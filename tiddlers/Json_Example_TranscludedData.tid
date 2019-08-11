@@ -1,0 +1,12 @@
+created: 20190406205059423
+modified: 20190409032703087
+schema: $:/schema/Example/Json/TranscludedData
+tags: 
+title: Json/Example/TranscludedData
+type: application/json
+
+{
+"string":"string content",
+"number": 523,
+"transclude":"{{Example/TranscludeSource}}"
+}

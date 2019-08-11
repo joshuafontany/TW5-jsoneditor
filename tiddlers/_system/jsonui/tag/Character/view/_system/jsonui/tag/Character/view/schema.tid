@@ -1,0 +1,74 @@
+created: 20190421195823857
+flat: true
+modified: 20190811224814166
+tags: TemplateSchema
+title: $:/jsonui/tag/Character/view/schema
+type: application/json
+
+{
+    "format": "categories",
+    "properties": {
+        "data": {
+            "properties": {
+                "aka": {
+                    "type": "string"
+                },
+                "faction": {
+                    "type": "string"
+                },
+                "first-name": {
+                    "type": "string"
+                },
+                "known-associates": {
+                    "type": "string"
+                },
+                "last-name": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "metadata": {
+            "properties": {
+                "reference-url": {
+                    "type": "string"
+                },
+                "appearance-films": {
+                    "type": "string"
+                },
+                "appearance-games": {
+                    "type": "string"
+                },
+                "appearance-notable": {
+                    "type": "string"
+                },
+                "actors-screen": {
+                    "type": "string"
+                },
+                "actors-voice": {
+                    "type": "string"
+                },
+               "actors-live": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "portrait": {
+            "properties": {
+                "portrait-source": {
+                    "type": "string"
+                },
+                "caption": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "title": "Character Profile",
+    "type": "object"
+}

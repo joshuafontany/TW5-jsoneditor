@@ -1,0 +1,6 @@
+created: 20190329035854529
+modified: 20190331012425718
+tags: 
+title: Usage/Preview Editor
+
+<$jsoneditor schema="$:/schema/Json/Example/StarShip" json="New Starship Tiddler" options="""{"mode": "preview", "enabled": true, "compact":true, "required_by_default":true}"""/>

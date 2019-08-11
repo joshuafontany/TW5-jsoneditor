@@ -1,0 +1,41 @@
+created: 20190327011927990
+modified: 20190327045716343
+source: https://eclipsesource.com/blogs/2015/06/22/the-what-and-why-of-jsonschema/
+tags: ExampleSchema
+title: Example/System User
+type: application/json
+
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "gender": {
+      "type": "string",
+      "enum": ["Male", "Female", "Both", "Neither", "Other"]
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "weight": {
+      "type": "number"
+    },
+    "height": {
+      "type": "integer"
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [ "firstName", "email" ],
+  "additionalProperties": false
+}

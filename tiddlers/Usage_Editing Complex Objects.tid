@@ -1,0 +1,16 @@
+created: 20190401210030076
+modified: 20190401222537408
+tags: 
+title: Usage/Editing Complex Objects
+
+This tiddler shows a method of editing individual objects stored in a larger object or array parent (with hundreds+ children). A $select and $list widget-pair read all the indexes and displays choices for the user. When the user selects an object the $select widget sets the current target to a ~$:/temp/ tiddler. This automatically updates the $jsoneditor widget to edit the new target. 
+
+If you are here after following the [[Advanced Examples]] tutorial, you can open the [[Json/Example/StarShips]] to see your changes as you make them.
+
+<$select tiddler="$:/temp/jsoneditor/StarShips" default=' '>
+<$list filter='[[Json/Example/StarShips]indexes[]removeprefix[/]splitbefore[/]removesuffix[/]addprefix[Json/Example/StarShips##/]]' variable="currentIndex">
+<option value=<<currentIndex>>>{{{ [<currentIndex>removeprefix[Json/Example/StarShips##/]] }}}</option>
+</$list>
+</$select>
+
+<$jsoneditor schema="$:/schema/Json/Example/StarShip" json={{$:/temp/jsoneditor/StarShips}} />

@@ -1,0 +1,30 @@
+created: 20190421191237064
+modified: 20190811222138942
+tags: 
+title: JsonUI
+
+The $jsoneditor widget is fully integrated into the tiddlywiki widget-tree, so all content is automatically wikified and refreshed using the native tiddlywiki refresh mechanism. This means that we can use a Json-Schema definition, along with a Json-Data-Tiddler that holds wikitext, to render UI elements in tiddlywiki. The below example is simply one way of combining these tools and concepts.
+
+Suppose we had two <<tag Character>> tiddlers. Each of these are tagged with <<tag-pill Character>>, and has the following fields: ``first-name, last-name, aka, faction, rank, known-associates, films, reference-url, voice-actors, screen-actors, portrait-source, and caption``
+
+We can then write a viewTemplate tiddler that only renders on <<tag-pill Character>> tiddlers, like so:
+
+[[$:/jsonui/tag/Character/view]]
+<$codeblock code={{$:/jsonui/tag/Character/view}} />
+
+As you can see, this uses a $jsoneditor widget and the [[$:/jsonui/tag/Character/view/schema]] schema to render the contents of the [[$:/jsonui/tag/Character/view/data]] json-data-tiddler into the viewTemplate when the tiddler is open in view mode, and another set when the tiddler is open in edit mode.
+
+Click on each <<tag-pill Character>> to see the view-mode JsonUI in action.
+
+<ul>
+<$list filter="[all[]tag[Character]]" >
+<li><$link to=<<currentTiddler>> ><$view tiddler=<<currentTiddler>> field="title"/></$link></li>
+</$list>
+</ul>
+
+The edit-mode side of this is setup by changing the json-attribute reference to [[$:/jsonui/tag/Character/edit/data]]. This changes how the `jsoneditor` widget renders each field.
+
+[[$:/jsonui/tag/Character/edit]]
+<$codeblock code={{$:/jsonui/tag/Character/edit}} />
+
+You can create a new tiddler and tag it with <<tag-pill Character>>. This triggers the draft-mechanism to render the editTemplate for characters (above). The $jsoneditor then renders tiddlywiki edit-widgets which target the appropriate fields on the current tiddler (the draft).

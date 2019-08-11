@@ -1,0 +1,6 @@
+created: 20190331213623250
+modified: 20190331213633740
+tags: 
+title: Json/Example/Employee
+
+{"employee":{"dateOfBirth":"","email":"","language":"","personalDetails":{"Family":{"kids":[{"age":0,"name":""}],"spouse":{"Income":{"monthly":0,"yearly":0},"name":"spouse"}},"GeneralDetails":{"address":"12345","age":0,"married":true,"phone":0},"Income":{"monthly":0,"yearly":0}},"projectDetails":[{"age":0,"name":"","projects":[{"age":0,"name":"","projectsAdditional":[{"Additional_areacode":0,"Additional_name":""}]}]}],"userName":""}}
