@@ -1,0 +1,17 @@
+created: 20190421195757979
+list-before: $:/core/ui/ViewTemplate/body
+modified: 20190812035256706
+tags: $:/tags/ViewTemplate
+title: $:/jsonui/tag/Character/view
+
+\define .list-field(f)
+<ul>
+<$list filter="[{!!$f$}splitregexp[,\s]]" variable="lf-item">
+<li><<lf-item>></li>
+</$list>
+</ul>
+\end
+
+<$list filter="[all[current]tag[Character]!has[draft.of]]">
+<$jsoneditor schema="$:/jsonui/tag/Character/view/schema" json="$:/jsonui/tag/Character/view/data" options="""{"mode": "view"}""" />
+</$list>

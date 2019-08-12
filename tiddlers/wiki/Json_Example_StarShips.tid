@@ -1,0 +1,35 @@
+created: 20190330035143034
+flat: false
+modified: 20190330044101017
+padding: 
+schema: $:/schema/Json/Example/StarShips
+tags: 
+title: Json/Example/StarShips
+type: application/json
+
+{
+    "Death Star": {
+        "beam": 160000,
+        "class": "Space battle station",
+        "manufacturer": "Advanced Weapons Research, Kuat Drive Yards, Sienar Fleet Systems",
+        "model": "DS-1 Orbital Battle Station",
+        "movie": "Star Wars: Episode III Revenge of the Sith",
+        "name": "Death Star"
+    },
+    "Executor": {
+        "beam": 19000,
+        "class": "Dreadnought",
+        "manufacturer": "Kuat Drive Yards",
+        "model": "Executor-class Star Dreadnought",
+        "movie": "Star Wars Episode V: The Empire Strikes Back",
+        "name": "Executor"
+    },
+    "Millennium Falcon": {
+        "beam": 34.75,
+        "class": "Light Freighter",
+        "manufacturer": "Corellian Engineering Corporation",
+        "model": "YT-1300 light freighter",
+        "movie": "Star Wars (multiple)",
+        "name": "Millennium Falcon"
+    }
+}

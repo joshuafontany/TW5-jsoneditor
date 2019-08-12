@@ -1,0 +1,6 @@
+created: 20190330034203416
+modified: 20190331213140921
+tags: 
+title: Json/Example/Professor
+
+{"first_name":"Doktor","last_name":"Howl","subject_teach":500}

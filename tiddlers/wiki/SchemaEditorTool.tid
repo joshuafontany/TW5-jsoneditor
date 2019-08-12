@@ -1,0 +1,15 @@
+created: 20190421202030128
+modified: 20190812035928522
+tags: 
+target: $:/jsonui/tag/Character/view/schema
+title: SchemaEditorTool
+
+!! Warning: Don't use this yet
+
+<$select filter="[tag[TemplateSchema]]" field="target">
+<$list filter='[all[shadows+tiddlers]tag[TemplateSchema]sort[title]]'>
+<option value=<<currentTiddler>>><$view field='title'/></option>
+</$list>
+</$select>
+
+<$jsoneditor json={{!!target}} options="""{"mode": "design"}"""/>

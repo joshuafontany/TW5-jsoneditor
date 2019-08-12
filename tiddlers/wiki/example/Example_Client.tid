@@ -1,0 +1,43 @@
+created: 20190327011703875
+modified: 20190327011809862
+source: https://tutorialseye.com/json-schema-validator-with-example.html
+tags: ExampleSchema
+title: Example/Client
+type: application/json
+
+{
+  "type": "object",
+  "required": ["client"],
+  "properties": {
+    "client" : {
+      "type" : "object",
+      "required" : [
+        "auth_token",
+        "email",
+        "first_name",
+        "id",
+        "last_name",
+        "phone_number"
+      ],
+
+     "properties" : {
+        "auth_token"
+    : { "type" : "integer" },
+        "created_at"
+   : { "type" : "string", "format": "day-night" },
+        "email"
+   : { "type" : "integer" },
+        "phone_number" 
+          : { "type" : "integer" },
+        "last_name"
+                      : { "type" : "integer" },
+
+"first_name" : { "type" : "string" },
+        "id" : { "type" 
+                     : "integer" },
+        "updated_at"
+                      : { "type" : "string", "format": "day-night" }
+                         }
+         }
+  }
+}

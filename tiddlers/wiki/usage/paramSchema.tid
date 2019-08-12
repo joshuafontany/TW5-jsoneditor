@@ -1,0 +1,87 @@
+created: 20190409205238700
+modified: 20190409205256420
+tags: 
+title: Usage/paramSchema
+
+!!Schema in the param attribute
+
+<$reveal type="nomatch" state="$:/config/Using JsonEditor!!exampleCode3" text="show">
+
+<$button set="$:/config/Using JsonEditor!!exampleCode3" setTo="show">Show source</$button>
+
+</$reveal>
+<$reveal type="match" state="$:/config/Using JsonEditor!!exampleCode3" text="show">
+
+<$button set="$:/config/Using JsonEditor!!exampleCode3" setTo="hide">Hide source</$button>
+
+```
+<$jsoneditor json="New Car Tiddler" options="""{"show_all":true}""" param="""
+{
+  "format": "grid",
+  "type": "object",
+  "title": "Car",
+  "properties": {
+    "make": {
+      "type": "string",
+      "enum": [
+        "Toyota",
+        "BMW",
+        "Honda",
+        "Ford",
+        "Chevy",
+        "VW"
+      ]
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer",
+      "enum": [
+        1995,1996,1997,1998,1999,
+        2000,2001,2002,2003,2004,
+        2005,2006,2007,2008,2009,
+        2010,2011,2012,2013,2014
+      ],
+      "default": 2008
+    }
+  }
+}"""/>
+```
+
+</$reveal>
+
+<$jsoneditor json="New Car Tiddler" options="""{"show_all":true}""" param="""
+{
+  "format": "grid",
+  "type": "object",
+  "title": "Car",
+  "properties": {
+    "make": {
+      "type": "string",
+      "enum": [
+        "Toyota",
+        "BMW",
+        "Honda",
+        "Ford",
+        "Chevy",
+        "VW"
+      ]
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer",
+      "enum": [
+        1995,1996,1997,1998,1999,
+        2000,2001,2002,2003,2004,
+        2005,2006,2007,2008,2009,
+        2010,2011,2012,2013,2014
+      ],
+      "default": 2008
+    }
+  }
+}"""/>
+
+``{{New Car Tiddler}}`` = <code>{{New Car Tiddler}}</code>

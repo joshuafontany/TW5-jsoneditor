@@ -1,0 +1,33 @@
+created: 20190421195753171
+flat: false
+modified: 20190812035539692
+padding: 
+schema: $:/jsonui/tag/Character/view/schema
+sort: false
+tags: 
+title: $:/jsonui/tag/Character/view/data
+type: application/json
+
+{
+    "data": {
+        "aka": "''A.K.A.:'' {{!!aka}}",
+        "faction": "''Faction:'' {{!!faction}}",
+        "first-name": "''First Name:'' {{!!first-name}}",
+        "known-associates": "''Known Associates:''<br/><<.list-field 'known-associates'>>",
+        "last-name": "''Last Name:'' {{!!last-name}}",
+        "rank": "''Rank:'' {{!!rank}}"
+    },
+    "metadata": {
+        "reference-url": "''Reference Links:'' <<.list-field 'reference-url'>>",
+        "appearance-films": "''Film Appearances:'' <<.list-field 'appearance-films'>>",
+        "appearance-games": "''Game Appearances:'' <<.list-field 'appearance-games'>>",
+        "appearance-notable": "''Other Notable Appearances:'' <<.list-field 'appearance-notable'>>",
+        "actors-screen": "''Screen Actors:'' <<.list-field 'actors-screen'>>",
+        "actors-voice": "''Voice Actors:'' <<.list-field 'actors-voice'>>",
+        "actors-live": "''Live Actors:'' <<.list-field 'actors-live'>>"
+    },
+    "portrait": {
+        "portrait-source": "<img src={{!!portrait-source}} />",
+        "caption": "<p style='text-align: center;'><span style='font-style: italic;'>{{!!caption}}</span></p>"
+    }
+}

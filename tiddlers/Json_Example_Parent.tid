@@ -1,6 +1,0 @@
-created: 20190329020432550
-modified: 20190329020432550
-tags: 
-title: Json/Example/Parent
-
-{"person":{"children":[{"children":[],"name":""}],"name":""}}

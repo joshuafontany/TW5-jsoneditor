@@ -1,6 +1,0 @@
-created: 20190329041427516
-modified: 20190402031338479
-tags: 
-title: Usage/View Mode
-
-<$jsoneditor schema="Example/person-schema" json="New Person Tiddler" options="""{"mode": "view", "view_toggle":true, "disable_collapse": true}"""/>

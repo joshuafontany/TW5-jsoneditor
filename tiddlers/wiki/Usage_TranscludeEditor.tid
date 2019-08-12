@@ -1,0 +1,8 @@
+created: 20190406205230083
+modified: 20190409032933847
+tags: 
+title: Usage/TranscludeEditor
+
+This is an example of "hosting" transcluded (i.e. wikified) content in an editor in View-mode. The literal text value of the third field in the data-tiddler is `{{Example/TranscludeSource}}`. That tiddler has the content which renders the icon, text, picture, and button. Pressing the button creates (but does not open) a new tiddler. Check the Recent tab.
+
+<$jsoneditor schema="$:/schema/Json/Example/TranscludedData" json="Json/Example/TranscludedData" options="""{"mode": "view", "view_toggle":true, "disable_collapse": true}"""/>

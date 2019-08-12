@@ -1,9 +1,0 @@
-created: 20190421195757979
-list-before: $:/core/ui/ViewTemplate/body
-modified: 20190421212824313
-tags: $:/tags/ViewTemplate
-title: $:/jsonui/tag/Character/view
-
-<$list filter="[all[current]tag[Character]!has[draft.of]]">
-<$jsoneditor schema="$:/jsonui/tag/Character/view/schema" json="$:/jsonui/tag/Character/view/data" options="""{"mode": "view"}""" />
-</$list>

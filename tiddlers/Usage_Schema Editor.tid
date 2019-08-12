@@ -1,6 +1,0 @@
-created: 20190330045248210
-modified: 20190401002952917
-tags: 
-title: Usage/Schema Editor
-
-<$jsoneditor json="$:/schema/Json/Example/StarShip" options="""{"mode": "design"}"""/>

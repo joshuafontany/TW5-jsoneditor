@@ -1,0 +1,32 @@
+created: 20190727001706223
+flat: false
+modified: 20190812005929629
+schema: $:/jsonui/tag/Character/view/schema
+sort: false
+tags: 
+title: $:/jsonui/tag/Character/edit/data
+type: application/json
+
+{
+    "data": {
+        "aka": "''A.K.A.:'' <$edit-text field='aka' class='tc-edit-texteditor'/>",
+        "faction": "''Faction:'' <$edit-text field='faction' class='tc-edit-texteditor'/>",
+        "first-name": "''First Name:'' <$edit-text field='first-name' class='tc-edit-texteditor'/>",
+        "known-associates": "''Known Associates:''<br/><$edit-text field='known-associates' tag='textarea' class='tc-edit-texteditor'/>",
+        "last-name": "''Last Name:'' <$edit-text field='last-name' class='tc-edit-texteditor'/>",
+        "rank": "''Rank:'' <$edit-text field='rank' class='tc-edit-texteditor'/>"
+    },
+    "metadata": {
+        "actors-live": "''Live Actors:'' <br/><$edit-text field='actors-live' tag='textarea' class='tc-edit-texteditor'/>",
+        "actors-screen": "''Screen Actors:'' <br/><$edit-text field='actors-screen' tag='textarea' class='tc-edit-texteditor'/>",
+        "actors-voice": "''Voice Actors:'' <br/><$edit-text field='actors-voice' tag='textarea' class='tc-edit-texteditor'/>",
+        "appearance-films": "''Film Appearances:'' <br/><$edit-text field='appearance-films' tag='textarea' class='tc-edit-texteditor'/>",
+        "appearance-games": "''Game Appearances:'' <br/><$edit-text field='appearance-games' tag='textarea' class='tc-edit-texteditor'/>",
+        "appearance-notable": "''Other Notable Appearances:'' <br/><$edit-text field='appearance-notable' tag='textarea' class='tc-edit-texteditor'/>",
+        "reference-url": "''Reference Links:'' <$edit-text field='reference-url' class='tc-edit-texteditor'/>"
+    },
+    "portrait": {
+        "caption": "''Caption:'' <$edit-text field='caption' tag='textarea' class='tc-edit-texteditor'/>",
+        "portrait-source": "<img src={{!!portrait-source}} /><br/>''URL:'' <$edit-text field='portrait-source' class='tc-edit-texteditor'/>"
+    }
+}

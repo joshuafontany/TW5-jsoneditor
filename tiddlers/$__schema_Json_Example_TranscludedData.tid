@@ -1,7 +1,0 @@
-created: 20190406205403989
-modified: 20190406205403989
-tags: 
-title: $:/schema/Json/Example/TranscludedData
-type: application/json
-
-{"type":"object","properties":{"string":{"type":"string"},"number":{"type":"integer"},"transclude":{"type":"string"}}}

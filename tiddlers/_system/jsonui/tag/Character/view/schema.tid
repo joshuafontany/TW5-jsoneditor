@@ -1,0 +1,137 @@
+created: 20190421195823857
+flat: false
+modified: 20190812023814094
+tags: TemplateSchema
+title: $:/jsonui/tag/Character/view/schema
+type: application/json
+
+{
+    "format": "categories",
+    "title": "Character Profile",
+    "type": "object",
+    "properties": {
+        "portrait": {
+            "options": {
+              "compact":"true",
+              "disable_collapse":"true",
+              "disable_properties":"true",
+              "disable_edit_json":"true"
+            },
+            "properties": {
+                "portrait-source": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "caption": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "data": {
+            "options": {
+              "compact":"true",
+              "disable_collapse":"true",
+              "disable_properties":"true",
+              "disable_edit_json":"true"
+            },
+            "properties": {
+                "first-name": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "last-name": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "aka": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "faction": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "rank": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "known-associates": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                }
+            },
+            "type": "object"
+        },
+		"metadata": {
+            "options": {
+              "compact":"true",
+              "disable_collapse":"true",
+              "disable_properties":"true",
+              "disable_edit_json":"true"
+            },
+            "properties": {
+                "reference-url": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "appearance-films": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "appearance-games": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "appearance-notable": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "actors-screen": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "actors-voice": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                },
+                "actors-live": {
+                    "type": "string",
+                    "options": {
+                       "compact":"true"
+                    }
+                }
+            },
+            "type": "object"
+        }
+    }
+}

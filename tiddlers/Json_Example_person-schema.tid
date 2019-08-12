@@ -1,6 +1,0 @@
-created: 20190329082005391
-modified: 20190330034926901
-tags: 
-title: Json/Example/person-schema
-
-{"age":25,"favorite_color":"#ffa500","gender":"male","location":{"city":"San Francisco","citystate":"San Francisco, CA","state":"CA"},"name":"Josh Fontany","pets":[]}

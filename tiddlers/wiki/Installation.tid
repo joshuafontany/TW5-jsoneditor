@@ -1,0 +1,15 @@
+created: 20190414210404003
+modified: 20190414210640711
+tags: 
+title: Installation
+
+Drag and drop the following tiddlers into your own wiki:
+
+    * [[$:/plugins/joshuafontany/jsoneditor]]
+    * [[$:/plugins/@oss/bootstrap4]]
+    * [[$:/plugins/TheDiveO/FontAwesome]]
+    * [[$:/plugins/joshuafontany/jsonmangler]]
+    * [[$:/plugins/ebalster/modloader]]
+    * [[$:/plugins/matabele/action-maketid]]
+    
+Alternately, go to the [[Plugin source code repository|https://github.com/joshuafontany/TW5-jsoneditor]] and clone it into your TiddlyWiki5 root into a `plugins/joshuafontany/jsoneditor` folder, and drag and drop the other tiddlers. If you want a "minified" version the Releases page has extractable packages for node.js served wikis. Place these in your TiddlyWiki5 root folder and unzip them by selecting `Extract Here` (7zip) or `Extract to here` (Winzip).

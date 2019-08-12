@@ -1,0 +1,52 @@
+created: 20190326014617681
+modified: 20190329044026198
+tags: 
+title: Using Json Editor
+
+\define dynamicJson()
+Json/$(schema)$
+\end
+
+!!Json Editor Examples
+
+<$reveal type="nomatch" state="$:/config/Using JsonEditor!!examples" text="show">
+
+<$button set="$:/config/Using JsonEditor!!examples" setTo="show">Show Examples</$button>
+
+</$reveal>
+<$reveal type="match" state="$:/config/Using JsonEditor!!examples" text="show">
+
+<$button set="$:/config/Using JsonEditor!!examples" setTo="hide">Hide Examples</$button>
+
+{{Usage/tiddlerSchema}}
+
+{{Usage/fieldStorage}}
+
+{{Usage/paramSchema}}
+
+{{Usage/noSchema}}
+
+</$reveal>
+
+!!Other Examples
+
+Explore other examples by setting the dropdown to one of the [[Examples Schemas|Example Schema Sources]]. To add more Schemas to this list, created a Json Tiddler that has a valid schema object in the text field and tag it `ExampleSchema`. After exploring these examples, you may want to take a look at the [[Advanced Examples]].
+
+<$select tiddler='$:/config/Using JsonEditor' field='dynamic_schema'>
+<$list filter='[all[shadows+tiddlers]tag[ExampleSchema]tsort[title]]'>
+<option value=<<currentTiddler>>><$view field='title'/></option>
+</$list>
+</$select>
+
+<$reveal type="nomatch" state="$:/config/Using JsonEditor!!dynamic" text="show">
+
+<$button set="$:/config/Using JsonEditor!!dynamic" setTo="show">Show Dynamic Form</$button>
+
+</$reveal>
+<$reveal type="match" state="$:/config/Using JsonEditor!!dynamic" text="show">
+
+<$button set="$:/config/Using JsonEditor!!dynamic" setTo="hide">Hide Dynamic Form</$button>
+<$set name="schema" tiddler="$:/config/Using JsonEditor" field="dynamic_schema">
+<$jsoneditor json=<<dynamicJson>> schema=<<schema>> options="""{ "disable_edit_json": false, "disable_properties": false, "show_all": true }"""/>
+</$set>
+</$reveal>

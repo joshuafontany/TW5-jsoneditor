@@ -1,0 +1,32 @@
+created: 20190327005317744
+modified: 20190327005710055
+source: https://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html
+tags: ExampleSchema
+title: Example/Grocery Store Item
+type: application/json
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "GroceryStoreInputModel",
+  "type": "object",
+  "properties": {
+    "department": { "type": "string" },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "bins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "type": { "type": "string" },
+          "price": { "type": "number" },
+          "unit": { "type": "string" },
+          "quantity": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

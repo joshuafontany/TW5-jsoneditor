@@ -1,0 +1,13 @@
+created: 20190406204711465
+modified: 20190409204828969
+tags: 
+title: Example/TranscludeSource
+
+<span class="fa fa-yin-yang"/> Transcluded content rendered here.
+
+[img[Motovun Jack.jpg]]
+
+<$button>
+<$action-createtiddler $basetitle="New Tiddler from Editor" text="This was triggered from within a $jsoneditor. This is cool!!!!!"/>
+New Tiddler
+</$button>
