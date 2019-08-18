@@ -1,7 +1,7 @@
 {
   "tiddlers": [
     {
-      "file": "jsoneditor.js",
+      "file": "jsoneditor.1.4.0.js",
       "prefix": "if($tw.browser){\n",
       "suffix": "\n}",
       "fields": {

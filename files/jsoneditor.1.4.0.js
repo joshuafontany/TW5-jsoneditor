@@ -2,7 +2,7 @@
  * @name JSON Editor
  * @description JSON Schema Based Editor
  * This library is the continuation of jdorn's great work (see also https://github.com/jdorn/json-editor/issues/800)
- * @version 1.4.0-beta.0 TiddlyWiki fork 
+ * @version 1.4.0-beta.0 TiddlyWiki fork @ https://joshuafontany.github.io/TW5-jsoneditor/
  * @author Jeremy Dorn
  * @see https://github.com/jdorn/json-editor/
  * @see https://github.com/json-editor/json-editor
@@ -2804,6 +2804,10 @@ JSONEditor.defaults.editors.number = JSONEditor.defaults.editors.string.extend({
     if (!this.dependenciesFulfilled) {
       return undefined;
     }
+    if(this.value*1 !== this.value*1){
+      //NaN is not equal to itself
+      this.value = this.getDefault();
+    }
     return this.value===''?undefined:this.value*1;
   }
 });
@@ -3535,9 +3539,13 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     }
     // If the object should be rendered as a div
     else {
-      this.header = document.createElement('label');
-      this.header.textContent = this.getTitle();
-      this.title = this.theme.getHeader(this.header);
+      if(!this.options.compact) {
+        this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+        this.title = this.theme.getHeader(this.header);
+      }
+      else {
+        this.title = this.theme.getHeader("");
+      }
       this.container.appendChild(this.title);
       this.container.style.position = 'relative';
 
@@ -3767,7 +3775,45 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       });
       this.addproperty_controls.appendChild(this.addproperty_button);
       this.addproperty_controls.appendChild(this.addproperty_holder);
+      if(this.jsoneditor.options.mode == "design"){
+        //Design Mode
+        var isObjectPropertiesButton = function(node) {
+          // Check whether the node is a properties button for an object,
+          // and not for the schema of an object named properties
+          // Does the path end in '.properties'?
+          if(node.matches('div[data-schemapath$=".properties"] > h3 > div > button.json-editor-btntype-properties')) { 
+            var containingDiv = node.parentElement.parentElement.parentElement;
+            var span = containingDiv.querySelector('h3 > span');
+            // Is it an object properties or a property named properties?
+            if(span && span.innerText === 'properties') { 
+                return true;
+            }
+          }
+          return false;
+        };
+        if(isObjectPropertiesButton(this.addproperty_button)) {
+          this.addproperty_button.querySelector('span').innerText = 'Add/Remove';
+        }
+        else if(this.addproperty_button.matches('button.json-editor-btntype-properties')) {
+          // For other properties buttons, remove the 'Properties' label,
+          // and use a cog as icon
+          var icon = this.addproperty_button.querySelector('i');
+          icon.classList.remove('fa-pen');
+          icon.classList.add('fa-cog');
+          var span = this.addproperty_button.querySelector('span');
+          span.innerText = '';
+        }
+
+      }
       this.refreshAddProperties();
+      // Compact flag
+      if(this.options.compact) {
+        this.container.classList.add('compact');
+      }
+      var hidden = (this.options.compact && this.options.disable_properties && this.options.disable_edit_json && this.options.disable_collapse);
+      if(hidden) {
+        this.title.style.display = 'none';
+      }
 
       // non required properties start deactivated
       this.deactivateNonRequiredProperties();
