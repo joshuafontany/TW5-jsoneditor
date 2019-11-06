@@ -1,6 +1,5 @@
-created: 20190331214736334
-modified: 20190331215037804
-tags: 
+created: 20191011033516309
+modified: 20191011033734553
 title: No Schema Json
 
-{"properties":{"beam":null,"class":null,"manufacturer":null,"model":null,"movie":null,"name":null},"type":{}}
+{"properties":{"name":{"type":"string"}},"type":"object"}

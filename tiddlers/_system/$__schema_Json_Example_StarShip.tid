@@ -1,7 +1,0 @@
-created: 20190401205053456
-modified: 20190401205053456
-tags: 
-title: $:/schema/Json/Example/StarShip
-type: application/json
-
-{"type":"object","properties":{"beam":{"type":"number"},"class":{"type":"string"},"manufacturer":{"type":"string"},"model":{"type":"string"},"movie":{"type":"string"},"name":{"type":"string"}}}
