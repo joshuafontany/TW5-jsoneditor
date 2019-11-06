@@ -4,7 +4,7 @@
 "created": "20140901105647564",
 "description": "FontAwesome embedded font support for TW5",
 "fa-version": "5.8.2",
-"list": ["readme", "license", "history",]
+"list": ["readme", "license", "history"],
 "modified": "20190509195640767",
 "plugin-type": "plugin",
 "source": "https://github.com/TheDiveO/TW5FontAwesome",
