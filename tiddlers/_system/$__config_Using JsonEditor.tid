@@ -3,12 +3,12 @@ creator: joshuafontany
 dynamic: show
 dynamic_schema: Example/Book
 example2: hide
-exampleCode1: hide
-examplecode1: show
+exampleCode3: hide
+examplecode1: hide
 examplecode2: hide
 examplecode3: hide
 examples: show
-modified: 20191011033747211
+modified: 20191209004220482
 modifier: joshuafontany
 tags: 
 title: $:/config/Using JsonEditor

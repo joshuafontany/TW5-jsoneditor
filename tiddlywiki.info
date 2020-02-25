@@ -8,7 +8,8 @@
         "joshuafontany/jsoneditor",
         "joshuafontany/jsonmangler",
         "matabele/action-maketid",
-        "@oss/bootstrap4"
+        "@oss/bootstrap4",
+        "OokTech/Bob"
     ],
     "themes": [
         "tiddlywiki/vanilla",
